@@ -462,13 +462,23 @@ $('login-form').addEventListener('submit', async ev => {
   msg.className = 'msg ok';
   msg.textContent = 'Link enviado! Confere sua caixa de entrada (e o spam).';
   $('login-hint').style.display = 'block';
-  $('login-hint').innerHTML =
-    'Se o link te jogar em uma página quebrada (<code>localhost:3000</code>), falta liberar esta URL no Supabase: ' +
-    '<a href="https://supabase.com/dashboard/project/npkoidvkuomiuqkyeadf/auth/url-configuration" target="_blank" rel="noopener">' +
-    'Authentication → URL Configuration</a> → em <strong>Redirect URLs</strong>, adiciona <code>' +
-    esc(window.location.href.split('#')[0]) + '</code> e em <strong>Site URL</strong> coloca <code>' +
-    esc(window.location.origin) + '</code>. Depois é só pedir o link de novo.';
+  $('login-hint').textContent =
+    'O link vale por 1 hora e só abre uma vez. Se der erro, é só pedir outro aqui.';
 });
+
+// Link expirado ou já usado volta pra cá com o erro no fim da URL
+(function () {
+  const hash = window.location.hash;
+  if (!hash.includes('error')) return;
+  const p = new URLSearchParams(hash.slice(1));
+  const code = p.get('error_code') || '';
+  const msg = $('login-msg');
+  msg.className = 'msg err';
+  msg.textContent = code === 'otp_expired'
+    ? 'Esse link já expirou ou já tinha sido usado. Pede um novo aqui embaixo.'
+    : 'Não consegui te logar: ' + (p.get('error_description') || code).replace(/\+/g, ' ');
+  history.replaceState(null, '', window.location.pathname);
+})();
 
 $('logout').addEventListener('click', async () => {
   await sb.auth.signOut();
