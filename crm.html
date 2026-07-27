@@ -319,6 +319,26 @@
     color: var(--text-primary);
   }
   .modal textarea:focus { outline: none; border-color: var(--primary); }
+  .modal input[type="password"] {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+  }
+  .modal input[type="password"]:focus { outline: none; border-color: var(--primary); }
+  .modal p.explica { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+  }
+  .link-btn:hover { color: var(--text-primary); }
   .modal-foot { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
   .btn-danger { background: transparent; color: #DC2626; border: 1px solid rgba(220, 38, 38, 0.35); }
   .btn-danger:hover { background: rgba(220, 38, 38, 0.06); }
@@ -352,11 +372,13 @@
 <div class="login-wrap" id="login">
   <div class="login-card">
     <h1>CRM SeuAgente</h1>
-    <p class="sub">Entra com o seu e-mail que eu te mando um link de acesso.</p>
+    <p class="sub">Entra com seu e-mail e senha. Na primeira vez, pede o link por e-mail e cria sua senha lá dentro.</p>
     <form id="login-form">
       <input id="email" type="email" placeholder="seu@email.com" autocomplete="email" required>
-      <button class="btn btn-block" type="submit" id="login-btn">Enviar link de acesso</button>
+      <input id="senha" type="password" placeholder="Sua senha" autocomplete="current-password">
+      <button class="btn btn-block" type="submit" id="login-btn">Entrar</button>
     </form>
+    <button class="link-btn" id="magic-btn" style="margin-top:14px">Não tenho senha — me manda um link por e-mail</button>
     <p class="msg" id="login-msg"></p>
     <div class="hint" id="login-hint" style="display:none"></div>
   </div>
@@ -368,6 +390,7 @@
     <div class="brand">CRM <span>· SeuAgente</span></div>
     <div class="topbar-actions">
       <span class="who" id="who"></span>
+      <button class="btn btn-ghost" id="senha-btn">Senha</button>
       <button class="btn btn-ghost" id="refresh">Atualizar</button>
       <button class="btn btn-ghost" id="logout">Sair</button>
     </div>
@@ -437,10 +460,47 @@ function quando(iso) {
 }
 
 /* ---------- Auth ---------- */
+// Entrar com senha (não gasta e-mail, é o caminho do dia a dia)
 $('login-form').addEventListener('submit', async ev => {
   ev.preventDefault();
   const btn = $('login-btn'), msg = $('login-msg');
   const email = $('email').value.trim();
+  const password = $('senha').value;
+
+  if (!password) {
+    msg.className = 'msg err';
+    msg.textContent = 'Digita sua senha — ou pede um link por e-mail no botão abaixo.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+  msg.className = 'msg';
+  msg.textContent = '';
+
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+
+  btn.disabled = false;
+  btn.textContent = 'Entrar';
+
+  if (error) {
+    msg.className = 'msg err';
+    msg.textContent = /invalid login/i.test(error.message)
+      ? 'E-mail ou senha não conferem. Se você ainda não criou uma senha, entra pelo link do e-mail e define uma lá dentro.'
+      : 'Não consegui entrar: ' + error.message;
+  }
+});
+
+// Link por e-mail (usa o SMTP do Supabase: 2 envios por hora no plano free)
+$('magic-btn').addEventListener('click', async () => {
+  const btn = $('magic-btn'), msg = $('login-msg');
+  const email = $('email').value.trim();
+  if (!email) {
+    msg.className = 'msg err';
+    msg.textContent = 'Preenche o e-mail primeiro.';
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Enviando...';
   msg.className = 'msg';
@@ -452,18 +512,20 @@ $('login-form').addEventListener('submit', async ev => {
   });
 
   btn.disabled = false;
-  btn.textContent = 'Enviar link de acesso';
+  btn.textContent = 'Não tenho senha — me manda um link por e-mail';
 
   if (error) {
     msg.className = 'msg err';
-    msg.textContent = 'Não consegui enviar: ' + error.message;
+    msg.textContent = /rate limit/i.test(error.message)
+      ? 'Bateu o limite de e-mails do Supabase (2 por hora). Espera uns minutos e tenta de novo — ou entra com a senha, se já tiver criado uma.'
+      : 'Não consegui enviar: ' + error.message;
     return;
   }
   msg.className = 'msg ok';
   msg.textContent = 'Link enviado! Confere sua caixa de entrada (e o spam).';
   $('login-hint').style.display = 'block';
   $('login-hint').textContent =
-    'O link vale por 1 hora e só abre uma vez. Se der erro, é só pedir outro aqui.';
+    'O link vale por 1 hora e só abre uma vez. Depois de entrar, cria uma senha no botão "Senha" lá em cima pra nunca mais depender de e-mail.';
 });
 
 // Link expirado ou já usado volta pra cá com o erro no fim da URL
@@ -483,6 +545,41 @@ $('login-form').addEventListener('submit', async ev => {
 $('logout').addEventListener('click', async () => {
   await sb.auth.signOut();
   location.reload();
+});
+
+// Definir/trocar senha — a senha é digitada por você e vai direto pro Supabase
+$('senha-btn').addEventListener('click', () => {
+  $('modal').innerHTML = `
+    <h3>Sua senha de acesso</h3>
+    <p class="explica">Com uma senha definida você entra direto, sem depender do e-mail
+    (o Supabase gratuito só manda 2 e-mails por hora). Mínimo de 8 caracteres.</p>
+    <label for="nova-senha">Nova senha</label>
+    <input id="nova-senha" type="password" autocomplete="new-password" placeholder="••••••••">
+    <label for="conf-senha">Repete a senha</label>
+    <input id="conf-senha" type="password" autocomplete="new-password" placeholder="••••••••">
+    <p class="msg" id="senha-msg"></p>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="senha-cancel">Cancelar</button>
+      <button class="btn" id="senha-salvar">Salvar senha</button>
+    </div>`;
+  $('overlay').classList.add('show');
+  $('nova-senha').focus();
+
+  $('senha-cancel').onclick = fechar;
+  $('senha-salvar').onclick = async () => {
+    const a = $('nova-senha').value, b = $('conf-senha').value;
+    const m = $('senha-msg');
+    if (a.length < 8) { m.className = 'msg err'; m.textContent = 'Precisa ter pelo menos 8 caracteres.'; return; }
+    if (a !== b) { m.className = 'msg err'; m.textContent = 'As duas senhas não batem.'; return; }
+
+    $('senha-salvar').disabled = true;
+    const { error } = await sb.auth.updateUser({ password: a });
+    $('senha-salvar').disabled = false;
+
+    if (error) { m.className = 'msg err'; m.textContent = 'Não deu certo: ' + error.message; return; }
+    fechar();
+    toast('Senha salva — agora é só entrar com ela');
+  };
 });
 
 $('refresh').addEventListener('click', carregar);
