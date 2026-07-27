@@ -561,7 +561,6 @@
     font-size: 16px;
     line-height: 1.6;
   }
-  #cta-meio { background-image: var(--grad-section); }
 
   /* ---------- Quem somos ---------- */
   .about {
@@ -652,6 +651,193 @@
     color: var(--primary);
   }
 
+  /* ---------- Formulário final ---------- */
+  #form {
+    background: var(--primary);
+    padding: 96px 0;
+  }
+  @media (min-width: 1024px) { #form { padding: 140px 0; } }
+  .form-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+  .form-head h2 {
+    color: var(--primary-foreground);
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .form-head p { color: rgba(255, 255, 255, 0.6); font-size: 16px; line-height: 1.6; }
+  .lead-form {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field > label,
+  .field-group > legend {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0;
+  }
+  .field .opt { color: rgba(255, 255, 255, 0.4); }
+  .field input {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-md);
+    color: #FFFFFF;
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 15px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+  .field input::placeholder { color: rgba(255, 255, 255, 0.35); }
+  .field input:hover { border-color: rgba(255, 255, 255, 0.28); }
+  .field input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .field input[aria-invalid="true"] { border-color: #FF8A8A; }
+  .field .err {
+    font-size: 12px;
+    color: #FF8A8A;
+    min-height: 0;
+    display: none;
+  }
+  .field .err.show { display: block; }
+
+  .field-group { border: none; display: flex; flex-direction: column; gap: 10px; }
+  .field-group legend { margin-bottom: 2px; }
+  .opt-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+  .opt-card:hover { border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.08); }
+  .opt-card input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt-card .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    flex-shrink: 0;
+    margin-top: 1px;
+    position: relative;
+    transition: border-color 0.25s ease;
+  }
+  .opt-card .dot::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    transform: scale(0);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .opt-card input:checked ~ .dot { border-color: #FFFFFF; }
+  .opt-card input:checked ~ .dot::after { transform: scale(1); }
+  .opt-card input:focus-visible ~ .dot { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
+  .opt-card:has(input:checked) {
+    border-color: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .opt-card .opt-text {
+    font-size: 14px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .opt-card:has(input:checked) .opt-text { color: #FFFFFF; }
+
+  .form-submit {
+    background: var(--primary-foreground);
+    color: var(--primary);
+    border: none;
+    cursor: pointer;
+    align-self: center;
+    margin-top: 6px;
+    font-family: var(--font-body);
+  }
+  .form-submit[disabled] { opacity: 0.6; cursor: default; transform: none; }
+  .form-note {
+    text-align: center;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.5;
+  }
+  .form-error-top {
+    display: none;
+    text-align: center;
+    font-size: 13.5px;
+    color: #FF8A8A;
+  }
+  .form-error-top.show { display: block; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .form-success {
+    display: none;
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-lg);
+    padding: 44px 32px;
+    animation: successIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .form-success.show { display: block; }
+  @keyframes successIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .form-success .tick {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .form-success .tick svg { width: 22px; height: 22px; }
+  .form-success h3 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 300;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+  }
+  .form-success p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .form-success .btn {
+    background: transparent;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+  .form-success .btn:hover { border-color: #FFFFFF; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .form-success { animation: none; }
+    .opt-card .dot::after { transition: none; }
+  }
+
+  section[id] { scroll-margin-top: 80px; }
+
   /* ---------- Footer ---------- */
   footer {
     background: var(--primary);
@@ -713,7 +899,7 @@
       <a href="#quem-somos">Quem somos</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-sm" href="https://w.app/seuagente" target="_blank" rel="noopener">
+    <a class="btn btn-sm" href="#form">
       Quero meu Agente IA
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
     </a>
@@ -730,7 +916,7 @@
       <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">pela metade do tempo.</span>
     </h1>
     <p class="sub reveal rd-2">Tenha um agente IA como a voz do seu cliente que traz ideias de conteúdos, faz calendário editorial, analisa os conteúdos e escreve roteiros com a voz do seu cliente.</p>
-    <a class="btn reveal rd-3" href="https://w.app/seuagente" target="_blank" rel="noopener">
+    <a class="btn reveal rd-3" href="#form">
       Quero meu Agente IA
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
     </a>
@@ -884,15 +1070,86 @@
   </div>
 </section>
 
-<!-- 4. CTA MEIO -->
-<section id="cta-meio">
-  <div class="container cta-block reveal">
-    <h2>Tenha SeuAgente ainda Hoje</h2>
-    <p>Em 10 minutos a gente entende como você trabalha hoje e mostra se o agente faz sentido pra você, ou se não faz.</p>
-    <a class="btn" href="https://w.app/seuagente" target="_blank" rel="noopener">
-      Quero meu Agente IA!
-      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
-    </a>
+<!-- 4. FORMULÁRIO -->
+<section id="form">
+  <div class="container">
+    <div class="form-head reveal">
+      <h2>Tenha SeuAgente ainda Hoje</h2>
+      <p>Em 10 minutos de conversa a gente entende como você trabalha hoje e mostra se o agente faz sentido pra você, ou se não faz. Responde aqui embaixo, leva menos de um minuto.</p>
+    </div>
+
+    <form id="lead-form" class="lead-form reveal" novalidate>
+      <div class="field">
+        <label for="f-nome">Nome</label>
+        <input id="f-nome" name="nome" type="text" maxlength="120" autocomplete="name" placeholder="Como você se chama?">
+        <span class="err" data-err="nome">Preenche seu nome pra gente saber com quem fala.</span>
+      </div>
+
+      <div class="field">
+        <label for="f-instagram">@ do Instagram</label>
+        <input id="f-instagram" name="instagram" type="text" maxlength="80" autocomplete="off" placeholder="@seuperfil">
+        <span class="err" data-err="instagram">Coloca seu @ pra eu ver seu trabalho antes da conversa.</span>
+      </div>
+
+      <div class="field">
+        <label for="f-whatsapp">WhatsApp</label>
+        <input id="f-whatsapp" name="whatsapp" type="tel" inputmode="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999">
+        <span class="err" data-err="whatsapp">Preciso de um WhatsApp válido pra te chamar.</span>
+      </div>
+
+      <fieldset class="field-group">
+        <legend>Qual o maior gargalo como Social Media?</legend>
+        <label class="opt-card">
+          <input type="radio" name="gargalo" value="Atendo muitos clientes e não sobra tempo pra mim.">
+          <span class="dot"></span>
+          <span class="opt-text">Atendo muitos clientes e não sobra tempo pra mim.</span>
+        </label>
+        <label class="opt-card">
+          <input type="radio" name="gargalo" value="Quero pegar mais clientes, mas não dou conta de mais volume.">
+          <span class="dot"></span>
+          <span class="opt-text">Quero pegar mais clientes, mas não dou conta de mais volume.</span>
+        </label>
+        <label class="opt-card">
+          <input type="radio" name="gargalo" value="Tenho poucos clientes e quero profissionalizar.">
+          <span class="dot"></span>
+          <span class="opt-text">Tenho poucos clientes e quero profissionalizar.</span>
+        </label>
+        <label class="opt-card">
+          <input type="radio" name="gargalo" value="Perco horas criando conteúdo que nem sempre agrada o cliente.">
+          <span class="dot"></span>
+          <span class="opt-text">Perco horas criando conteúdo que nem sempre agrada o cliente.</span>
+        </label>
+        <span class="err" data-err="gargalo">Escolhe a opção que mais parece com o seu dia.</span>
+      </fieldset>
+
+      <div class="field">
+        <label for="f-origem">Como conheceu a gente? <span class="opt">(opcional)</span></label>
+        <input id="f-origem" name="origem" type="text" maxlength="200" autocomplete="off" placeholder="Instagram, indicação, YouTube...">
+      </div>
+
+      <div class="hp" aria-hidden="true">
+        <label for="f-site">Não preencha este campo</label>
+        <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <span class="form-error-top" id="form-error-top" role="alert"></span>
+
+      <button type="submit" class="btn form-submit" id="form-submit">
+        Quero meu Agente IA hoje!
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
+      </button>
+      <p class="form-note">Sem compromisso e sem contrato. É uma conversa de 10 minutos pra ver se faz sentido.</p>
+    </form>
+
+    <div class="form-success" id="form-success" role="status">
+      <div class="tick"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 11.5 9 16l9-10"/></svg></div>
+      <h3>Recebi seus dados!</h3>
+      <p>Vou dar uma olhada no seu perfil e te chamar no WhatsApp em breve. Se quiser adiantar, é só me chamar agora.</p>
+      <a class="btn" href="https://w.app/seuagente" target="_blank" rel="noopener">
+        Falar agora no WhatsApp
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -953,12 +1210,14 @@
   </div>
 </section>
 
+
+
 <!-- 7. CTA FINAL -->
 <section id="cta-final">
   <div class="container cta-block reveal">
     <h2>Delegue agora ou continue sendo escravo do trabalho.</h2>
     <p>Cada mês que passa é cliente que você não pegou e fim de semana que você não teve. Não custa nada descobrir se dá pra mudar isso.</p>
-    <a class="btn" href="https://w.app/seuagente" target="_blank" rel="noopener">
+    <a class="btn" href="#form">
       Quero meu Agente IA hoje!
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
     </a>
@@ -1018,6 +1277,89 @@
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
   document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+
+  // Formulário de leads → Supabase
+  (function () {
+    var SB_URL = 'https://npkoidvkuomiuqkyeadf.supabase.co';
+    var SB_KEY = 'sb_publishable_p1ckpmVwchCNQy0lSaLrpA_ka4tJHSy';
+    var form = document.getElementById('lead-form');
+    if (!form) return;
+    var submitBtn = document.getElementById('form-submit');
+    var topError = document.getElementById('form-error-top');
+    var success = document.getElementById('form-success');
+
+    function showErr(name, show) {
+      var el = form.querySelector('[data-err="' + name + '"]');
+      if (el) el.classList.toggle('show', show);
+      var input = form.querySelector('[name="' + name + '"]');
+      if (input && input.type !== 'radio') input.setAttribute('aria-invalid', show ? 'true' : 'false');
+    }
+
+    function digits(v) { return (v || '').replace(/\D/g, ''); }
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      topError.classList.remove('show');
+
+      var data = {
+        nome: form.nome.value.trim(),
+        instagram: form.instagram.value.trim(),
+        whatsapp: form.whatsapp.value.trim(),
+        origem: form.origem.value.trim(),
+        gargalo: (form.querySelector('input[name="gargalo"]:checked') || {}).value || ''
+      };
+
+      var bad = false;
+      var checks = {
+        nome: data.nome.length >= 2,
+        instagram: data.instagram.length >= 2,
+        whatsapp: digits(data.whatsapp).length >= 10 && digits(data.whatsapp).length <= 15,
+        gargalo: !!data.gargalo
+      };
+      Object.keys(checks).forEach(function (k) {
+        showErr(k, !checks[k]);
+        if (!checks[k]) bad = true;
+      });
+      if (bad) {
+        var first = form.querySelector('.err.show');
+        if (first) first.scrollIntoView({ block: 'center' });
+        return;
+      }
+
+      // honeypot: bot preencheu campo escondido
+      if (form.site.value) { success.classList.add('show'); form.style.display = 'none'; return; }
+
+      submitBtn.disabled = true;
+      submitBtn.firstChild.textContent = 'Enviando... ';
+
+      fetch(SB_URL + '/rest/v1/leads', {
+        method: 'POST',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          nome: data.nome,
+          instagram: data.instagram,
+          whatsapp: data.whatsapp,
+          gargalo: data.gargalo,
+          origem: data.origem || null
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        form.style.display = 'none';
+        success.classList.add('show');
+        success.scrollIntoView({ block: 'center' });
+      }).catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.firstChild.textContent = 'Quero meu Agente IA hoje! ';
+        topError.textContent = 'Não consegui enviar agora. Tenta de novo ou me chama direto no WhatsApp.';
+        topError.classList.add('show');
+      });
+    });
+  })();
 </script>
 
 </body>

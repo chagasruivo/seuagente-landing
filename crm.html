@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>CRM — SeuAgente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0A0A0A;
+    --bg-base: #FFFFFF;
+    --bg-soft: #F7F7F8;
+    --bg-elevated: rgba(64, 64, 64, 0.06);
+    --text-primary: #0A0A0A;
+    --text-muted: rgba(10, 10, 10, 0.6);
+    --text-faint: rgba(10, 10, 10, 0.38);
+    --border: rgba(10, 10, 10, 0.1);
+    --font-display: 'Merriweather', serif;
+    --font-body: 'Inter', sans-serif;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --c-qualificado: #3B82F6;
+    --c-contato: #F59E0B;
+    --c-fechado: #10B981;
+    --c-desqualificado: #94A3B8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-soft);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 300; }
+  button, input, textarea, select { font-family: inherit; font-size: inherit; }
+
+  /* ---------- Login ---------- */
+  .login-wrap {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--bg-base);
+  }
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  .login-card h1 { font-size: 32px; margin-bottom: 10px; }
+  .login-card .sub { color: var(--text-muted); margin-bottom: 32px; line-height: 1.6; }
+  .login-card input {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    transition: border-color 0.25s ease;
+  }
+  .login-card input:focus { outline: none; border-color: var(--primary); }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 22px;
+    background: var(--primary);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-weight: 400;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .btn:hover { transform: scale(1.02); }
+  .btn[disabled] { opacity: 0.55; cursor: default; transform: none; }
+  .btn-block { width: 100%; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    height: 38px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover { color: var(--text-primary); border-color: var(--primary); }
+  .msg { margin-top: 16px; font-size: 13px; line-height: 1.6; }
+  .msg.err { color: #DC2626; }
+  .msg.ok { color: #059669; }
+  .hint {
+    margin-top: 28px;
+    padding: 16px;
+    background: var(--bg-soft);
+    border-radius: var(--radius-md);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    text-align: left;
+  }
+  .hint code {
+    font-family: ui-monospace, monospace;
+    font-size: 11.5px;
+    background: rgba(10, 10, 10, 0.06);
+    padding: 2px 5px;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+  .hint a { color: var(--text-primary); }
+
+  /* ---------- App ---------- */
+  #app { display: none; }
+  .topbar {
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .topbar .brand { font-family: var(--font-display); font-size: 19px; }
+  .topbar .brand span { color: var(--text-faint); }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar .who { font-size: 12.5px; color: var(--text-faint); }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .stat {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+  }
+  .stat .label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .stat .value { font-family: var(--font-display); font-size: 26px; line-height: 1; }
+  .stat .value small { font-size: 13px; color: var(--text-faint); font-family: var(--font-body); }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(260px, 1fr));
+    gap: 14px;
+    padding: 6px 20px 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  @media (max-width: 1100px) {
+    .board { grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .board { grid-template-columns: 1fr; }
+  }
+  .col {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .col.drag-over {
+    background: #FAFAFA;
+    box-shadow: 0 0 0 2px var(--primary) inset;
+  }
+  .col-head {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .col-title { font-size: 13.5px; font-weight: 400; flex: 1; }
+  .col-count {
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 2px 9px;
+    border-radius: 9999px;
+  }
+  .col-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 90px;
+  }
+  .col-empty {
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 12.5px;
+    padding: 22px 8px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .card {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--col-accent, var(--border));
+    border-radius: var(--radius-md);
+    padding: 13px 14px;
+    cursor: grab;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    animation: cardIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .card:hover { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07); transform: translateY(-1px); }
+  .card.dragging { opacity: 0.45; cursor: grabbing; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .card .nome { font-weight: 400; font-size: 14.5px; margin-bottom: 4px; }
+  .card .meta { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .card .meta a { color: var(--text-muted); text-decoration: none; }
+  .card .meta a:hover { color: var(--text-primary); text-decoration: underline; }
+  .card .gargalo {
+    margin-top: 9px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    padding: 7px 9px;
+    line-height: 1.4;
+  }
+  .card .foot {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card .date { font-size: 11px; color: var(--text-faint); }
+  .card .note-flag { font-size: 11px; color: var(--text-faint); }
+  .card-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .icon-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
+  .icon-btn svg { width: 13px; height: 13px; }
+  .card select {
+    width: 100%;
+    margin-top: 9px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-base);
+    color: var(--text-muted);
+    padding: 0 8px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.45);
+    z-index: 60;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .overlay.show { display: flex; animation: fade 0.25s ease both; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--bg-base);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 460px;
+    padding: 26px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .modal h3 { font-size: 22px; margin-bottom: 4px; }
+  .modal .modal-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+  .modal .row { display: flex; gap: 10px; font-size: 13.5px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .modal .row .k { color: var(--text-faint); width: 96px; flex-shrink: 0; }
+  .modal .row .v { color: var(--text-primary); flex: 1; word-break: break-word; }
+  .modal .row .v a { color: var(--text-primary); }
+  .modal label { display: block; font-size: 12.5px; color: var(--text-muted); margin: 20px 0 8px; }
+  .modal textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    resize: vertical;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+  .modal textarea:focus { outline: none; border-color: var(--primary); }
+  .modal-foot { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
+  .btn-danger { background: transparent; color: #DC2626; border: 1px solid rgba(220, 38, 38, 0.35); }
+  .btn-danger:hover { background: rgba(220, 38, 38, 0.06); }
+
+  .loading, .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--primary);
+    color: #FFFFFF;
+    padding: 11px 20px;
+    border-radius: 9999px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 80;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login">
+  <div class="login-card">
+    <h1>CRM SeuAgente</h1>
+    <p class="sub">Entra com o seu e-mail que eu te mando um link de acesso.</p>
+    <form id="login-form">
+      <input id="email" type="email" placeholder="seu@email.com" autocomplete="email" required>
+      <button class="btn btn-block" type="submit" id="login-btn">Enviar link de acesso</button>
+    </form>
+    <p class="msg" id="login-msg"></p>
+    <div class="hint" id="login-hint" style="display:none"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand">CRM <span>· SeuAgente</span></div>
+    <div class="topbar-actions">
+      <span class="who" id="who"></span>
+      <button class="btn btn-ghost" id="refresh">Atualizar</button>
+      <button class="btn btn-ghost" id="logout">Sair</button>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="board" id="board"></div>
+  <div class="loading" id="loading">Carregando leads...</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SB_URL = 'https://npkoidvkuomiuqkyeadf.supabase.co';
+const SB_KEY = 'sb_publishable_p1ckpmVwchCNQy0lSaLrpA_ka4tJHSy';
+const sb = createClient(SB_URL, SB_KEY);
+
+const COLS = [
+  { id: 'qualificado',    nome: 'Leads qualificados', cor: 'var(--c-qualificado)' },
+  { id: 'contato',        nome: 'Entrei em contato',  cor: 'var(--c-contato)' },
+  { id: 'fechado',        nome: 'Fechados',           cor: 'var(--c-fechado)' },
+  { id: 'desqualificado', nome: 'Desqualificados',    cor: 'var(--c-desqualificado)' }
+];
+
+const $ = id => document.getElementById(id);
+let leads = [];
+
+function toast(txt) {
+  const t = $('toast');
+  t.textContent = txt;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function waLink(tel) {
+  const d = String(tel || '').replace(/\D/g, '');
+  if (!d) return null;
+  return 'https://wa.me/' + (d.length <= 11 ? '55' + d : d);
+}
+
+function igLink(handle) {
+  const h = String(handle || '').trim().replace(/^@/, '').replace(/\s/g, '');
+  if (!h) return null;
+  if (h.startsWith('http')) return h;
+  return 'https://instagram.com/' + h;
+}
+
+function quando(iso) {
+  const d = new Date(iso);
+  const dias = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if (dias === 0) return 'hoje';
+  if (dias === 1) return 'ontem';
+  if (dias < 30) return dias + ' dias atrás';
+  return d.toLocaleDateString('pt-BR');
+}
+
+/* ---------- Auth ---------- */
+$('login-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const btn = $('login-btn'), msg = $('login-msg');
+  const email = $('email').value.trim();
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  msg.className = 'msg';
+  msg.textContent = '';
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.href.split('#')[0] }
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Enviar link de acesso';
+
+  if (error) {
+    msg.className = 'msg err';
+    msg.textContent = 'Não consegui enviar: ' + error.message;
+    return;
+  }
+  msg.className = 'msg ok';
+  msg.textContent = 'Link enviado! Confere sua caixa de entrada (e o spam).';
+  $('login-hint').style.display = 'block';
+  $('login-hint').innerHTML =
+    'Se o link te jogar em uma página quebrada (<code>localhost:3000</code>), falta liberar esta URL no Supabase: ' +
+    '<a href="https://supabase.com/dashboard/project/npkoidvkuomiuqkyeadf/auth/url-configuration" target="_blank" rel="noopener">' +
+    'Authentication → URL Configuration</a> → em <strong>Redirect URLs</strong>, adiciona <code>' +
+    esc(window.location.href.split('#')[0]) + '</code> e em <strong>Site URL</strong> coloca <code>' +
+    esc(window.location.origin) + '</code>. Depois é só pedir o link de novo.';
+});
+
+$('logout').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  location.reload();
+});
+
+$('refresh').addEventListener('click', carregar);
+
+sb.auth.onAuthStateChange((_e, session) => {
+  if (session) iniciar(session);
+});
+
+(async () => {
+  const { data } = await sb.auth.getSession();
+  if (data.session) iniciar(data.session);
+})();
+
+async function iniciar(session) {
+  if (window.location.hash.includes('access_token')) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+  $('login').style.display = 'none';
+  $('app').style.display = 'block';
+  $('who').textContent = session.user.email;
+  await carregar();
+}
+
+/* ---------- Dados ---------- */
+async function carregar() {
+  $('loading').style.display = 'block';
+  $('loading').textContent = 'Carregando leads...';
+  const { data, error } = await sb.from('leads').select('*').order('created_at', { ascending: false });
+
+  if (error) {
+    $('loading').innerHTML = 'Não consegui carregar os leads.<br><small>' + esc(error.message) + '</small>';
+    $('board').innerHTML = '';
+    $('stats').innerHTML = '';
+    return;
+  }
+  if (data === null) {
+    $('loading').textContent = 'Esse e-mail não tem acesso ao CRM.';
+    return;
+  }
+  leads = data;
+  $('loading').style.display = 'none';
+  render();
+}
+
+/* ---------- Render ---------- */
+function render() {
+  const total = leads.length;
+  const por = id => leads.filter(l => l.status === id).length;
+  const fechados = por('fechado');
+  const taxa = total ? Math.round((fechados / total) * 100) : 0;
+
+  $('stats').innerHTML = `
+    <div class="stat"><div class="label">Total de leads</div><div class="value">${total}</div></div>
+    <div class="stat"><div class="label">Aguardando contato</div><div class="value">${por('qualificado')}</div></div>
+    <div class="stat"><div class="label">Em conversa</div><div class="value">${por('contato')}</div></div>
+    <div class="stat"><div class="label">Fechados</div><div class="value">${fechados} <small>${taxa}% de conversão</small></div></div>`;
+
+  $('board').innerHTML = COLS.map(col => {
+    const doCol = leads.filter(l => l.status === col.id);
+    return `
+      <div class="col" data-col="${col.id}">
+        <div class="col-head">
+          <span class="col-dot" style="background:${col.cor}"></span>
+          <span class="col-title">${col.nome}</span>
+          <span class="col-count">${doCol.length}</span>
+        </div>
+        <div class="col-body" data-drop="${col.id}">
+          ${doCol.length ? doCol.map(l => cardHTML(l, col)).join('') : '<div class="col-empty">Nenhum lead aqui</div>'}
+        </div>
+      </div>`;
+  }).join('');
+
+  ligarEventos();
+}
+
+function cardHTML(l, col) {
+  const wa = waLink(l.whatsapp);
+  const ig = igLink(l.instagram);
+  return `
+    <div class="card" draggable="true" data-id="${l.id}" style="--col-accent:${col.cor}">
+      <div class="nome">${esc(l.nome)}</div>
+      <div class="meta">
+        ${ig ? `<a href="${esc(ig)}" target="_blank" rel="noopener">${esc(l.instagram)}</a><br>` : ''}
+        ${wa ? `<a href="${esc(wa)}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : esc(l.whatsapp || '')}
+      </div>
+      ${l.gargalo ? `<div class="gargalo">${esc(l.gargalo)}</div>` : ''}
+      <select data-move="${l.id}" title="Mover para outra coluna">
+        ${COLS.map(c => `<option value="${c.id}"${c.id === l.status ? ' selected' : ''}>${c.nome}</option>`).join('')}
+      </select>
+      <div class="foot">
+        <span class="date">${quando(l.created_at)}${l.notas ? ' · <span class="note-flag">tem nota</span>' : ''}</span>
+        <div class="card-actions">
+          <button class="icon-btn" data-open="${l.id}" title="Abrir detalhes">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4Z"/><circle cx="7" cy="7" r="1.6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function ligarEventos() {
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  });
+
+  document.querySelectorAll('.col').forEach(col => {
+    const body = col.querySelector('.col-body');
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+    col.addEventListener('dragleave', e => {
+      if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+    });
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      if (id) mover(id, body.dataset.drop);
+    });
+  });
+
+  document.querySelectorAll('[data-move]').forEach(sel => {
+    sel.addEventListener('change', () => mover(sel.dataset.move, sel.value));
+    sel.addEventListener('mousedown', e => e.stopPropagation());
+  });
+
+  document.querySelectorAll('[data-open]').forEach(btn => {
+    btn.addEventListener('click', () => abrir(btn.dataset.open));
+  });
+}
+
+/* ---------- Ações ---------- */
+async function mover(id, novoStatus) {
+  const lead = leads.find(l => l.id === id);
+  if (!lead || lead.status === novoStatus) return;
+  const anterior = lead.status;
+  lead.status = novoStatus;
+  render();
+
+  const { error } = await sb.from('leads').update({ status: novoStatus }).eq('id', id);
+  if (error) {
+    lead.status = anterior;
+    render();
+    toast('Não consegui mover: ' + error.message);
+  } else {
+    toast('Movido para "' + COLS.find(c => c.id === novoStatus).nome + '"');
+  }
+}
+
+function abrir(id) {
+  const l = leads.find(x => x.id === id);
+  if (!l) return;
+  const wa = waLink(l.whatsapp), ig = igLink(l.instagram);
+
+  $('modal').innerHTML = `
+    <h3>${esc(l.nome)}</h3>
+    <p class="modal-sub">Chegou ${quando(l.created_at)} · ${new Date(l.created_at).toLocaleString('pt-BR')}</p>
+    <div class="row"><span class="k">Instagram</span><span class="v">${ig ? `<a href="${esc(ig)}" target="_blank" rel="noopener">${esc(l.instagram)}</a>` : '—'}</span></div>
+    <div class="row"><span class="k">WhatsApp</span><span class="v">${wa ? `<a href="${esc(wa)}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : esc(l.whatsapp || '—')}</span></div>
+    <div class="row"><span class="k">Gargalo</span><span class="v">${esc(l.gargalo || '—')}</span></div>
+    <div class="row"><span class="k">Conheceu por</span><span class="v">${esc(l.origem || '—')}</span></div>
+    <label for="notas">Minhas anotações</label>
+    <textarea id="notas" placeholder="O que rolou na conversa, próximo passo, valor proposto...">${esc(l.notas || '')}</textarea>
+    <div class="modal-foot">
+      <button class="btn btn-ghost btn-danger" id="del">Apagar lead</button>
+      <button class="btn btn-ghost" id="fechar">Fechar</button>
+      <button class="btn" id="salvar">Salvar nota</button>
+    </div>`;
+  $('overlay').classList.add('show');
+
+  $('fechar').onclick = fechar;
+  $('salvar').onclick = async () => {
+    const notas = $('notas').value.trim();
+    const { error } = await sb.from('leads').update({ notas: notas || null }).eq('id', l.id);
+    if (error) return toast('Erro ao salvar: ' + error.message);
+    l.notas = notas || null;
+    fechar();
+    render();
+    toast('Nota salva');
+  };
+  $('del').onclick = async () => {
+    if (!confirm('Apagar o lead "' + l.nome + '"? Isso não tem volta.')) return;
+    const { error } = await sb.from('leads').delete().eq('id', l.id);
+    if (error) return toast('Erro ao apagar: ' + error.message);
+    leads = leads.filter(x => x.id !== l.id);
+    fechar();
+    render();
+    toast('Lead apagado');
+  };
+}
+
+function fechar() { $('overlay').classList.remove('show'); }
+$('overlay').addEventListener('click', e => { if (e.target === $('overlay')) fechar(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(); });
+</script>
+</body>
+</html>

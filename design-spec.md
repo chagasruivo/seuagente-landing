@@ -52,3 +52,20 @@ Fonte autoritativa de design do `index.html`. Base: aesthetory.com (Framer, dark
 - [x] Foto do Igor em #quem-somos (igor.jpg)
 - [x] CTAs → https://w.app/seuagente (target _blank)
 - [ ] Confirmar e-mail do footer (contato@seuagente.com.br é placeholder) e @ do Instagram
+
+## Formulário + CRM (Supabase)
+
+**Projeto Supabase:** `seuagente-crm` (ref `npkoidvkuomiuqkyeadf`, região sa-east-1)
+URL: `https://npkoidvkuomiuqkyeadf.supabase.co` · chave publishable no HTML (pode ser pública, é protegida por RLS)
+
+**Tabela `leads`:** nome, instagram, whatsapp, gargalo, origem, status, notas, created_at, updated_at.
+`status` = `qualificado` | `contato` | `fechado` | `desqualificado` (colunas do kanban).
+
+**Segurança (validada):**
+- Visitante (anon) só faz INSERT, e só nas colunas nome/instagram/whatsapp/gargalo/origem — não consegue ler nada nem definir status/notas (GRANT por coluna + policy com CHECK).
+- Só e-mails na tabela `crm_admins` leem/movem/apagam leads. Testado: outro usuário logado enxerga 0 linhas.
+- Funções SECURITY DEFINER sem EXECUTE pra anon.
+
+**Landing:** seção `#form` ficou no lugar do antigo CTA do meio ("Tenha SeuAgente ainda Hoje"). Todos os CTAs apontam pra `#form`; o único link de WhatsApp que sobrou é o do painel de sucesso, depois do envio. `#cta-final` fecha a página empurrando de volta pro form.
+
+**CRM:** `crm.html` — login por magic link (e-mail), kanban de 4 colunas com drag-and-drop + select (mobile), métricas no topo, modal com anotações, WhatsApp e Instagram clicáveis. `noindex`.
