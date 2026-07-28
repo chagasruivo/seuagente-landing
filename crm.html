@@ -230,6 +230,15 @@
   .card .meta { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
   .card .meta a { color: var(--text-muted); text-decoration: none; }
   .card .meta a:hover { color: var(--text-primary); text-decoration: underline; }
+  .card .tag {
+    display: inline-block;
+    margin-top: 9px;
+    font-size: 11px;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 3px 10px;
+  }
   .card .gargalo {
     margin-top: 9px;
     font-size: 11.5px;
@@ -665,6 +674,7 @@ function cardHTML(l, col) {
         ${ig ? `<a href="${esc(ig)}" target="_blank" rel="noopener">${esc(l.instagram)}</a><br>` : ''}
         ${wa ? `<a href="${esc(wa)}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : esc(l.whatsapp || '')}
       </div>
+      ${l.clientes ? `<div class="tag">${esc(l.clientes)}</div>` : ''}
       ${l.gargalo ? `<div class="gargalo">${esc(l.gargalo)}</div>` : ''}
       <select data-move="${l.id}" title="Mover para outra coluna">
         ${COLS.map(c => `<option value="${c.id}"${c.id === l.status ? ' selected' : ''}>${c.nome}</option>`).join('')}
@@ -742,6 +752,7 @@ function abrir(id) {
     <p class="modal-sub">Chegou ${quando(l.created_at)} · ${new Date(l.created_at).toLocaleString('pt-BR')}</p>
     <div class="row"><span class="k">Instagram</span><span class="v">${ig ? `<a href="${esc(ig)}" target="_blank" rel="noopener">${esc(l.instagram)}</a>` : '—'}</span></div>
     <div class="row"><span class="k">WhatsApp</span><span class="v">${wa ? `<a href="${esc(wa)}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : esc(l.whatsapp || '—')}</span></div>
+    <div class="row"><span class="k">Clientes hoje</span><span class="v">${esc(l.clientes || '—')}</span></div>
     <div class="row"><span class="k">Gargalo</span><span class="v">${esc(l.gargalo || '—')}</span></div>
     <div class="row"><span class="k">Conheceu por</span><span class="v">${esc(l.origem || '—')}</span></div>
     <label for="notas">Minhas anotações</label>

@@ -758,6 +758,32 @@
   }
   .opt-card:has(input:checked) .opt-text { color: #FFFFFF; }
 
+  .opt-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .opt-pill {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 12px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 9999px;
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .opt-pill:hover { border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.08); }
+  .opt-pill input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt-pill:has(input:checked) {
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+    color: var(--primary);
+  }
+  .opt-pill:has(input:focus-visible) { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
+  @media (max-width: 620px) {
+    .opt-pill { flex: 1 1 calc(50% - 5px); }
+  }
+
   .form-submit {
     background: var(--primary-foreground);
     color: var(--primary);
@@ -1098,6 +1124,29 @@
       </div>
 
       <fieldset class="field-group">
+        <legend>Quantos clientes você atende hoje?</legend>
+        <div class="opt-row">
+          <label class="opt-pill">
+            <input type="radio" name="clientes" value="Ainda não atendo">
+            <span class="opt-text">Ainda não atendo</span>
+          </label>
+          <label class="opt-pill">
+            <input type="radio" name="clientes" value="1 a 3 clientes">
+            <span class="opt-text">1 a 3</span>
+          </label>
+          <label class="opt-pill">
+            <input type="radio" name="clientes" value="4 a 7 clientes">
+            <span class="opt-text">4 a 7</span>
+          </label>
+          <label class="opt-pill">
+            <input type="radio" name="clientes" value="8 ou mais clientes">
+            <span class="opt-text">8 ou mais</span>
+          </label>
+        </div>
+        <span class="err" data-err="clientes">Escolhe quantos clientes você atende hoje.</span>
+      </fieldset>
+
+      <fieldset class="field-group">
         <legend>Qual o maior gargalo como Social Media?</legend>
         <label class="opt-card">
           <input type="radio" name="gargalo" value="Atendo muitos clientes e não sobra tempo pra mim.">
@@ -1306,6 +1355,7 @@
         instagram: form.instagram.value.trim(),
         whatsapp: form.whatsapp.value.trim(),
         origem: form.origem.value.trim(),
+        clientes: (form.querySelector('input[name="clientes"]:checked') || {}).value || '',
         gargalo: (form.querySelector('input[name="gargalo"]:checked') || {}).value || ''
       };
 
@@ -1314,6 +1364,7 @@
         nome: data.nome.length >= 2,
         instagram: data.instagram.length >= 2,
         whatsapp: digits(data.whatsapp).length >= 10 && digits(data.whatsapp).length <= 15,
+        clientes: !!data.clientes,
         gargalo: !!data.gargalo
       };
       Object.keys(checks).forEach(function (k) {
@@ -1344,6 +1395,7 @@
           nome: data.nome,
           instagram: data.instagram,
           whatsapp: data.whatsapp,
+          clientes: data.clientes,
           gargalo: data.gargalo,
           origem: data.origem || null
         })

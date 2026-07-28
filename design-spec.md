@@ -58,7 +58,9 @@ Fonte autoritativa de design do `index.html`. Base: aesthetory.com (Framer, dark
 **Projeto Supabase:** `seuagente-crm` (ref `npkoidvkuomiuqkyeadf`, região sa-east-1)
 URL: `https://npkoidvkuomiuqkyeadf.supabase.co` · chave publishable no HTML (pode ser pública, é protegida por RLS)
 
-**Tabela `leads`:** nome, instagram, whatsapp, gargalo, origem, status, notas, created_at, updated_at.
+**Tabela `leads`:** nome, instagram, whatsapp, clientes, gargalo, origem, status, notas, created_at, updated_at.
+
+**Obrigatórios** (validados no formulário E na policy de INSERT): nome, instagram, whatsapp, clientes, gargalo. Só `origem` ("Como conheceu a gente?") é opcional.
 `status` = `qualificado` | `contato` | `fechado` | `desqualificado` (colunas do kanban).
 
 **Segurança (validada):**
