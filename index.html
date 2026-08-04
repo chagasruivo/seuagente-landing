@@ -124,6 +124,12 @@
   .btn:hover { transform: scale(1.03); }
   .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
   .btn-sm { height: 40px; font-size: 15px; }
+  /* Em telas bem estreitas o logo + botão da navbar não cabiam lado a lado */
+  @media (max-width: 400px) {
+    .btn-sm { height: 36px; font-size: 12.5px; padding: 0 12px 0 14px; gap: 6px; }
+    .btn-sm svg { width: 15px; height: 15px; }
+    .nav-logo { font-size: 16px; }
+  }
 
   /* ---------- Hero ---------- */
   .hero {
@@ -142,7 +148,7 @@
     margin-bottom: 20px;
   }
   .hero h1 {
-    font-size: clamp(36px, 5.5vw, 56px);
+    font-size: clamp(30px, 7.5vw, 56px);
     line-height: 1.05;
     max-width: 800px;
     margin: 0 auto 12px;
@@ -151,6 +157,10 @@
     display: block;
     min-height: 1.15em;
     color: var(--text-primary);
+  }
+  .hero .rotator .word {
+    display: inline-block;
+    white-space: nowrap;
   }
   .hero .rotator .letter {
     display: inline-block;
@@ -183,7 +193,8 @@
   .phone {
     position: relative;
     z-index: 2;
-    width: min(340px, 88vw);
+    /* 100% = o que sobra dentro do .hero-visual; nunca estoura em tela estreita */
+    width: min(340px, 100%);
     margin: 0 auto;
     background: #111114;
     border-radius: 56px;
@@ -1287,14 +1298,28 @@
   // Segunda linha do H1 entra letra a letra
   (function () {
     var el = document.getElementById('rotator');
-    function show(word) {
+    // Cada palavra vira um bloco próprio: a linha quebra entre palavras,
+    // nunca no meio delas (letras soltas quebravam em qualquer ponto).
+    function show(frase) {
       el.innerHTML = '';
-      word.split('').forEach(function (ch, idx) {
-        var s = document.createElement('span');
-        s.className = 'letter';
-        s.textContent = ch === ' ' ? ' ' : ch;
-        s.style.animationDelay = (0.3 + idx * 0.045) + 's';
-        el.appendChild(s);
+      var i = 0;
+      var palavras = frase.split(' ');
+      palavras.forEach(function (palavra, wi) {
+        var w = document.createElement('span');
+        w.className = 'word';
+        palavra.split('').forEach(function (ch) {
+          var s = document.createElement('span');
+          s.className = 'letter';
+          s.textContent = ch;
+          s.style.animationDelay = (0.3 + i * 0.045) + 's';
+          i++;
+          w.appendChild(s);
+        });
+        el.appendChild(w);
+        if (wi < palavras.length - 1) {
+          el.appendChild(document.createTextNode(' '));
+          i++;
+        }
       });
     }
     show('pela metade do tempo.');
