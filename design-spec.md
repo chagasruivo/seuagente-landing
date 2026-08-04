@@ -71,3 +71,9 @@ URL: `https://npkoidvkuomiuqkyeadf.supabase.co` · chave publishable no HTML (po
 **Landing:** seção `#form` ficou no lugar do antigo CTA do meio ("Tenha SeuAgente ainda Hoje"). Todos os CTAs apontam pra `#form`; o único link de WhatsApp que sobrou é o do painel de sucesso, depois do envio. `#cta-final` fecha a página empurrando de volta pro form.
 
 **CRM:** `crm.html` — login por magic link (e-mail), kanban de 4 colunas com drag-and-drop + select (mobile), métricas no topo, modal com anotações, WhatsApp e Instagram clicáveis. `noindex`.
+
+## Rastreio de origem (links de indicação)
+
+- `vercel.json` faz redirect temporário (307): `/ias` → `/?ref=ias` e `/r/:slug` → `/?ref=:slug` (link genérico pra qualquer parceiro novo, sem precisar mexer no código).
+- O JS lê `?ref=` (ou `utm_source`), sanitiza pra `[a-z0-9_-]` com até 40 chars, guarda em `sessionStorage` no carregamento e envia na coluna `ref` do lead. Sem link de indicação → `ref` fica null (aparece como "Direto").
+- No CRM: etiqueta preta "via ias" no card, linha "Link de origem" no detalhe, e uma barra de filtros por origem acima do board — clicando, as 4 métricas do topo recalculam só pra aquela origem (dá pra ver a taxa de conversão por parceiro).

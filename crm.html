@@ -155,6 +155,34 @@
   .stat .value { font-family: var(--font-display); font-size: 26px; line-height: 1; }
   .stat .value small { font-size: 13px; color: var(--text-faint); font-family: var(--font-body); }
 
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 0 20px 14px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .filtros .rotulo { font-size: 12px; color: var(--text-faint); margin-right: 2px; }
+  .chip-filtro {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .chip-filtro:hover { border-color: var(--primary); color: var(--text-primary); }
+  .chip-filtro.ativo {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
+  }
+  .chip-filtro b { font-weight: 400; opacity: 0.6; margin-left: 4px; }
+
   .board {
     display: grid;
     grid-template-columns: repeat(4, minmax(260px, 1fr));
@@ -233,11 +261,17 @@
   .card .tag {
     display: inline-block;
     margin-top: 9px;
+    margin-right: 5px;
     font-size: 11px;
     color: var(--text-primary);
     border: 1px solid var(--border);
     border-radius: 9999px;
     padding: 3px 10px;
+  }
+  .card .tag-ref {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
   }
   .card .gargalo {
     margin-top: 9px;
@@ -406,6 +440,7 @@
   </div>
 
   <div class="stats" id="stats"></div>
+  <div class="filtros" id="filtros"></div>
   <div class="board" id="board"></div>
   <div class="loading" id="loading">Carregando leads...</div>
 </div>
@@ -432,6 +467,7 @@ const COLS = [
 
 const $ = id => document.getElementById(id);
 let leads = [];
+let filtroRef = '';
 
 function toast(txt) {
   const t = $('toast');
@@ -635,8 +671,31 @@ async function carregar() {
 
 /* ---------- Render ---------- */
 function render() {
-  const total = leads.length;
-  const por = id => leads.filter(l => l.status === id).length;
+  // Filtro por origem do link (?ref=)
+  const fontes = {};
+  leads.forEach(l => {
+    const k = l.ref || 'direto';
+    fontes[k] = (fontes[k] || 0) + 1;
+  });
+  const chips = [['', 'Todos', leads.length]]
+    .concat(Object.keys(fontes).sort().map(k => [k, k === 'direto' ? 'Direto' : k, fontes[k]]));
+
+  $('filtros').innerHTML = Object.keys(fontes).length > 1
+    ? '<span class="rotulo">Veio de:</span>' + chips.map(([val, nome, qtd]) =>
+        `<button class="chip-filtro${filtroRef === val ? ' ativo' : ''}" data-ref="${esc(val)}">${esc(nome)}<b>${qtd}</b></button>`
+      ).join('')
+    : '';
+
+  $('filtros').querySelectorAll('[data-ref]').forEach(b => {
+    b.addEventListener('click', () => { filtroRef = b.dataset.ref; render(); });
+  });
+
+  const visiveis = filtroRef
+    ? leads.filter(l => (l.ref || 'direto') === filtroRef)
+    : leads;
+
+  const total = visiveis.length;
+  const por = id => visiveis.filter(l => l.status === id).length;
   const fechados = por('fechado');
   const taxa = total ? Math.round((fechados / total) * 100) : 0;
 
@@ -647,7 +706,7 @@ function render() {
     <div class="stat"><div class="label">Fechados</div><div class="value">${fechados} <small>${taxa}% de conversão</small></div></div>`;
 
   $('board').innerHTML = COLS.map(col => {
-    const doCol = leads.filter(l => l.status === col.id);
+    const doCol = visiveis.filter(l => l.status === col.id);
     return `
       <div class="col" data-col="${col.id}">
         <div class="col-head">
@@ -675,6 +734,7 @@ function cardHTML(l, col) {
         ${wa ? `<a href="${esc(wa)}" target="_blank" rel="noopener">${esc(l.whatsapp)}</a>` : esc(l.whatsapp || '')}
       </div>
       ${l.clientes ? `<div class="tag">${esc(l.clientes)}</div>` : ''}
+      ${l.ref ? `<div class="tag tag-ref">via ${esc(l.ref)}</div>` : ''}
       ${l.gargalo ? `<div class="gargalo">${esc(l.gargalo)}</div>` : ''}
       <select data-move="${l.id}" title="Mover para outra coluna">
         ${COLS.map(c => `<option value="${c.id}"${c.id === l.status ? ' selected' : ''}>${c.nome}</option>`).join('')}
@@ -755,6 +815,7 @@ function abrir(id) {
     <div class="row"><span class="k">Clientes hoje</span><span class="v">${esc(l.clientes || '—')}</span></div>
     <div class="row"><span class="k">Gargalo</span><span class="v">${esc(l.gargalo || '—')}</span></div>
     <div class="row"><span class="k">Conheceu por</span><span class="v">${esc(l.origem || '—')}</span></div>
+    <div class="row"><span class="k">Link de origem</span><span class="v">${l.ref ? esc(l.ref) : 'direto (sem link de indicação)'}</span></div>
     <label for="notas">Minhas anotações</label>
     <textarea id="notas" placeholder="O que rolou na conversa, próximo passo, valor proposto...">${esc(l.notas || '')}</textarea>
     <div class="modal-foot">

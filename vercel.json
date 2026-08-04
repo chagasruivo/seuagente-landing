@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/ias", "destination": "/?ref=ias", "permanent": false },
+    { "source": "/r/:slug", "destination": "/?ref=:slug", "permanent": false }
+  ]
+}

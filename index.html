@@ -1346,6 +1346,17 @@
 
     function digits(v) { return (v || '').replace(/\D/g, ''); }
 
+    // Origem do link (?ref=ias). Guarda na sessão pra sobreviver a recarregamento.
+    function getRef() {
+      var p = new URLSearchParams(location.search);
+      var r = (p.get('ref') || p.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+      try {
+        if (r) { sessionStorage.setItem('sa_ref', r); return r; }
+        return sessionStorage.getItem('sa_ref') || '';
+      } catch (e) { return r; }
+    }
+    getRef(); // guarda a origem assim que a página abre
+
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
       topError.classList.remove('show');
@@ -1397,7 +1408,8 @@
           whatsapp: data.whatsapp,
           clientes: data.clientes,
           gargalo: data.gargalo,
-          origem: data.origem || null
+          origem: data.origem || null,
+          ref: getRef() || null
         })
       }).then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
