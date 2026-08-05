@@ -4,6 +4,7 @@
     { "source": "/r/:slug", "destination": "/?ref=:slug", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/estrategia", "destination": "/estrategia.html" }
+    { "source": "/estrategia", "destination": "/estrategia.html" },
+    { "source": "/forms:slug", "destination": "/estrategia.html" }
   ]
 }

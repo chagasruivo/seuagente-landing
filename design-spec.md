@@ -83,7 +83,8 @@ URL: `https://npkoidvkuomiuqkyeadf.supabase.co` · chave publishable no HTML (po
 Segunda landing, single-purpose (só formulário), inspirada na estrutura da LP da Smart Sales:
 logo centralizado → headline grande → subtítulo → um painel único com o formulário → botão.
 
-- Arquivo `estrategia.html`, servido em `/estrategia` via rewrite no `vercel.json` (URL limpa, sem .html).
+- Arquivo `estrategia.html`, servido por rewrite no `vercel.json` (URL limpa, sem .html) em três caminhos: **/formsv1** (versão neutra, uso geral), **/formsias** (link da Iasmyn) e /estrategia (alias antigo).
+- O caminho define a indicação: a regex `/forms<slug>` vira `ref=<slug>`, com `v1` tratado como neutro. Ou seja, /formscarol já funciona pra um parceiro novo sem tocar no código, e o link compartilhado fica limpo (sem ?ref= na URL). Um `?ref=` explícito na query ainda tem precedência sobre o caminho.
 - Headline: "É preciso de EstratégIA para crescer." — o "IA" leva um sublinhado fino, que faz o trocadilho aparecer sem quebrar a paleta monocromática.
 - Mesma identidade da principal: Merriweather 300 nos títulos, Inter no corpo, painel rgba(64,64,64,0.06), CTA pill preto com seta.
 - Mesmos 6 campos do formulário principal, com os 5 obrigatórios.

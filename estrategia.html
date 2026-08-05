@@ -415,10 +415,17 @@
     var sucesso = document.getElementById('sucesso');
     var tituloPainel = document.getElementById('titulo-painel');
 
-    // Quem indicou (?ref=), guardado na sessão
+    // Quem indicou. Vem do caminho (/formsias -> ias) ou de ?ref=.
+    // /formsv1 é a versão neutra, sem indicação.
+    function refDoCaminho() {
+      var m = location.pathname.toLowerCase().match(/^\/forms([a-z0-9_-]+)\/?$/);
+      return (m && m[1] !== 'v1') ? m[1].slice(0, 40) : '';
+    }
+
     function getRef() {
       var p = new URLSearchParams(location.search);
-      var r = (p.get('ref') || p.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+      var r = (p.get('ref') || p.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40)
+              || refDoCaminho();
       try {
         if (r) { sessionStorage.setItem('sa_ref', r); return r; }
         return sessionStorage.getItem('sa_ref') || '';
