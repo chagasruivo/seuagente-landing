@@ -77,3 +77,18 @@ URL: `https://npkoidvkuomiuqkyeadf.supabase.co` · chave publishable no HTML (po
 - `vercel.json` faz redirect temporário (307): `/ias` → `/?ref=ias` e `/r/:slug` → `/?ref=:slug` (link genérico pra qualquer parceiro novo, sem precisar mexer no código).
 - O JS lê `?ref=` (ou `utm_source`), sanitiza pra `[a-z0-9_-]` com até 40 chars, guarda em `sessionStorage` no carregamento e envia na coluna `ref` do lead. Sem link de indicação → `ref` fica null (aparece como "Direto").
 - No CRM: etiqueta preta "via ias" no card, linha "Link de origem" no detalhe, e uma barra de filtros por origem acima do board — clicando, as 4 métricas do topo recalculam só pra aquela origem (dá pra ver a taxa de conversão por parceiro).
+
+## Landing de captação: /estrategia
+
+Segunda landing, single-purpose (só formulário), inspirada na estrutura da LP da Smart Sales:
+logo centralizado → headline grande → subtítulo → um painel único com o formulário → botão.
+
+- Arquivo `estrategia.html`, servido em `/estrategia` via rewrite no `vercel.json` (URL limpa, sem .html).
+- Headline: "É preciso de EstratégIA para crescer." — o "IA" leva um sublinhado fino, que faz o trocadilho aparecer sem quebrar a paleta monocromática.
+- Mesma identidade da principal: Merriweather 300 nos títulos, Inter no corpo, painel rgba(64,64,64,0.06), CTA pill preto com seta.
+- Mesmos 6 campos do formulário principal, com os 5 obrigatórios.
+- **Inputs com font-size 16px de propósito**: abaixo disso o Safari do iPhone dá zoom automático ao focar o campo e desloca o layout.
+- Alvos de toque: inputs 52px, pílulas 48px, botão 54px.
+- Grava na MESMA tabela `leads` (aparece no mesmo CRM), com `pagina = 'estrategia'` pra distinguir de quem veio pela landing principal (`pagina = 'principal'`, valor padrão da coluna).
+- O rastreio de indicação (`?ref=`) continua funcionando aqui também, então as duas dimensões coexistem: quem indicou × qual landing converteu.
+- No CRM: etiqueta tracejada "LP EstratégIA" no card, linha "Landing" no detalhe e um segundo grupo de filtros ("Landing:") que recalcula as métricas — dá pra comparar a conversão das duas páginas.
