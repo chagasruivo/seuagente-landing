@@ -184,307 +184,34 @@
     color: var(--text-muted);
   }
 
-  /* ---------- Hero visual: celular + notificações ---------- */
-  .hero-visual {
-    position: relative;
-    max-width: 960px;
-    margin: 72px auto 0;
-    padding: 0 20px;
-  }
-  .phone {
-    position: relative;
-    z-index: 2;
-    /* 100% = o que sobra dentro do .hero-visual; nunca estoura em tela estreita */
-    width: min(340px, 100%);
-    margin: 0 auto;
-    background: #111114;
-    border-radius: 56px;
-    padding: 12px;
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.16);
-    text-align: left;
-  }
-  .phone::before,
-  .phone::after {
+  /* ---------- Fundo animado do hero ---------- */
+  .hero { position: relative; overflow: hidden; }
+  .hero .container { position: relative; z-index: 1; }
+  .hero::before {
     content: '';
     position: absolute;
-    left: -2.5px;
-    width: 3px;
-    border-radius: 2px;
-    background: #2A2A2E;
+    inset: 0;
+    background: url('hero-xadrez.jpg') no-repeat center 72% / min(1080px, 135%);
+    filter: grayscale(1) contrast(1.04);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
   }
-  .phone::before { top: 110px; height: 32px; }
-  .phone::after { top: 154px; height: 58px; }
-  .phone .side-btn {
-    position: absolute;
-    right: -2.5px;
-    top: 130px;
-    width: 3px;
-    height: 76px;
-    border-radius: 2px;
-    background: #2A2A2E;
+  .js-anim .hero::before {
+    animation: fundoEntra 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards,
+               fundoRespira 26s ease-in-out 2.2s infinite alternate;
   }
-  .phone-screen {
-    position: relative;
-    background: #FFFFFF;
-    border-radius: 44px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .island {
-    position: absolute;
-    top: 11px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 86px;
-    height: 25px;
-    background: #0A0A0A;
-    border-radius: 9999px;
-    z-index: 2;
-  }
-  .status-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 26px 6px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: var(--font-body);
-    color: var(--text-primary);
-  }
-  .status-bar svg { height: 11px; display: block; }
-  .chat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(10, 10, 10, 0.05);
-  }
-  .chat-header .hicon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #F2F2F4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-primary);
-  }
-  .chat-header .hicon svg { width: 13px; height: 13px; }
-  .chat-title { text-align: center; }
-  .chat-title .chat-name {
-    font-weight: 400;
-    font-size: 13.5px;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
-  .chat-title .chat-status { font-size: 10.5px; color: var(--text-muted); }
-  .chat-body {
-    display: flex;
-    flex-direction: column;
-    padding: 14px 12px 6px;
-  }
-  .msg-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 7px;
-    max-width: 88%;
-  }
-  .msg-row.agent { align-self: flex-start; }
-  .msg-row.user { align-self: flex-end; }
-  .chat-avatar {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    flex-shrink: 0;
-  }
-  .msg {
-    padding: 9px 12px;
-    border-radius: 16px;
-    font-size: 12.5px;
-    line-height: 1.45;
-  }
-  .msg.in {
-    background: #F2F2F4;
-    border-bottom-left-radius: 5px;
-    color: var(--text-primary);
-  }
-  .msg.out {
-    background: var(--primary);
-    color: #FFFFFF;
-    border-bottom-right-radius: 5px;
-  }
-  .msg-time {
-    font-size: 9.5px;
-    color: rgba(10, 10, 10, 0.35);
-    margin: 3px 0 10px;
-  }
-  .msg-row.agent + .msg-time { align-self: flex-start; margin-left: 31px; }
-  .msg-row.user + .msg-time { align-self: flex-end; }
-  .msg.out.audio-msg {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 9999px;
-  }
-  .audio-msg .play {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #FFFFFF;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .audio-msg .play svg { width: 9px; height: 9px; margin-left: 1px; }
-  .wave { display: flex; align-items: center; gap: 2px; height: 16px; }
-  .wave i { width: 2px; border-radius: 1px; background: rgba(255, 255, 255, 0.85); }
-  .audio-msg .dur { font-size: 10.5px; color: rgba(255, 255, 255, 0.8); }
-  .creations {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 12px 0 8px;
-  }
-  .mini-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(10, 10, 10, 0.08);
-    border-radius: 14px;
-    padding: 12px 10px;
-    width: 82px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-    text-align: center;
-  }
-  .mini-card .mc-emoji { font-size: 20px; line-height: 1; margin-bottom: 8px; }
-  .mini-card .mc-label {
-    font-size: 10px;
-    color: var(--text-primary);
-    line-height: 1.25;
-  }
-  .mini-card:nth-child(1) { transform: rotate(-7deg) translateY(6px); z-index: 1; }
-  .mini-card:nth-child(2) { transform: translateY(-4px); z-index: 2; margin: 0 -10px; }
-  .mini-card:nth-child(3) { transform: rotate(7deg) translateY(6px); z-index: 1; }
-  .chat-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 18px 2px;
-    color: var(--text-muted);
-    font-size: 11px;
-  }
-  .chat-actions .act-left { display: flex; align-items: center; gap: 5px; }
-  .chat-actions svg { width: 13px; height: 13px; }
-  .chat-actions .thumbs { display: flex; gap: 10px; }
-  .chat-input {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 8px 12px 6px;
-    padding: 6px 6px 6px 14px;
-    background: #F2F2F4;
-    border-radius: 9999px;
-  }
-  .chat-input .plus { color: var(--text-muted); font-size: 16px; line-height: 1; }
-  .chat-input .placeholder { flex: 1; font-size: 12px; color: rgba(10, 10, 10, 0.35); }
-  .chat-input .send {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .chat-input .send svg { width: 12px; height: 12px; }
-  .home-bar {
-    width: 110px;
-    height: 4px;
-    border-radius: 2px;
-    background: #0A0A0A;
-    margin: 4px auto 10px;
+  /* Sem JS o fundo aparece parado, sem depender de animação */
+  html:not(.js-anim) .hero::before { opacity: 0.15; }
+
+  @keyframes fundoEntra { to { opacity: 0.15; } }
+  @keyframes fundoRespira {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(-18px) scale(1.06); }
   }
 
-  .chip {
-    position: absolute;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #FFFFFF;
-    border: 1px solid rgba(10, 10, 10, 0.08);
-    border-radius: 16px;
-    padding: 12px 16px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
-    text-align: left;
-    animation: floaty 5s ease-in-out infinite;
-  }
-  .chip .chip-icon { font-size: 18px; line-height: 1; }
-  .chip .chip-title {
-    font-size: 12.5px;
-    font-weight: 400;
-    color: var(--text-primary);
-    line-height: 1.3;
-  }
-  .chip .chip-sub { font-size: 11.5px; color: var(--text-muted); line-height: 1.35; }
-  .chip-1 { top: 1%; left: 4%; animation-delay: 0s; }
-  .chip-2 { top: 30%; left: 0; animation-delay: 1.2s; }
-  .chip-3 { top: 5%; right: 3%; animation-delay: 0.6s; }
-  .chip-4 { top: 38%; right: 0; animation-delay: 1.8s; }
-  @keyframes floaty {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  .chip .bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 26px;
-    margin-top: 6px;
-  }
-  .chip .bars i {
-    width: 7px;
-    border-radius: 3px;
-    background: var(--primary);
-  }
-  .chip .bars i:nth-child(1) { height: 30%; opacity: 0.25; }
-  .chip .bars i:nth-child(2) { height: 55%; opacity: 0.45; }
-  .chip .bars i:nth-child(3) { height: 40%; opacity: 0.35; }
-  .chip .bars i:nth-child(4) { height: 75%; opacity: 0.7; }
-  .chip .bars i:nth-child(5) { height: 100%; }
-  .chip .check {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .chip .check svg { width: 10px; height: 10px; }
-
-  @media (max-width: 1023px) {
-    .hero-visual { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .chip { position: static; animation: none; width: min(320px, 86vw); box-sizing: border-box; }
-    .chip-2 { order: 2; }
-    .chip-4 { order: 3; }
-    .chip-1, .chip-3 { display: none; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .chip { animation: none; }
-    .msg .typing i { animation: none; }
+  @media (max-width: 767px) {
+    .hero::before { background-size: 150%; background-position: center 68%; }
   }
 
   /* ---------- Eyebrow / headers de seção ---------- */
@@ -1137,6 +864,7 @@
     .js-anim .demo-linha,
     .js-anim .noticia { opacity: 1; transform: none; transition: none; animation: none; }
     .js-anim .digitando { display: none; }
+    .js-anim .hero::before { animation: none; opacity: 0.15; }
     .reveal { opacity: 1; transform: none; transition: none; }
     .hero .rotator .letter { opacity: 1; transform: none; animation: none; }
   }
@@ -1176,95 +904,6 @@
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
     </a>
 
-    <div class="hero-visual reveal rd-4">
-      <div class="chip chip-1">
-        <span class="chip-icon">💡</span>
-        <div>
-          <div class="chip-title">Nova ideia de conteúdo</div>
-          <div class="chip-sub">5 ganchos pro Reel de amanhã</div>
-        </div>
-      </div>
-      <div class="chip chip-2">
-        <div>
-          <div class="chip-title">Resultados do mês</div>
-          <div class="chip-sub">Alcance crescendo semana a semana</div>
-          <div class="bars"><i></i><i></i><i></i><i></i><i></i></div>
-        </div>
-      </div>
-      <div class="chip chip-3">
-        <span class="chip-icon">🔥</span>
-        <div>
-          <div class="chip-title">Tendência no seu nicho</div>
-          <div class="chip-sub">Formato em alta pra aproveitar hoje</div>
-        </div>
-      </div>
-      <div class="chip chip-4">
-        <div class="check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6.5 5 9l5-6"/></svg></div>
-        <div>
-          <div class="chip-title">Conteúdo pronto</div>
-          <div class="chip-sub">Roteiro aprovado, é só gravar</div>
-        </div>
-      </div>
-
-      <div class="phone">
-        <span class="side-btn"></span>
-        <div class="phone-screen">
-          <div class="island"></div>
-          <div class="status-bar">
-            <span>9:41</span>
-            <svg viewBox="0 0 46 12" fill="currentColor"><rect x="0" y="4.5" width="3" height="7.5" rx="1"/><rect x="4.5" y="3" width="3" height="9" rx="1"/><rect x="9" y="1.5" width="3" height="10.5" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/><path d="M25 4.6a7.2 7.2 0 0 1 9.2 0l-1.4 1.7a5 5 0 0 0-6.4 0L25 4.6Zm2.4 2.9a3.7 3.7 0 0 1 4.4 0l-2.2 2.7-2.2-2.7Z"/><rect x="37.5" y="1.5" width="7.5" height="9" rx="2.4" fill="none" stroke="currentColor" stroke-width="1"/><rect x="39" y="3" width="4.5" height="6" rx="1.1"/></svg>
-          </div>
-          <div class="chat-header">
-            <span class="hicon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5 3.5 6 8 10.5"/></svg></span>
-            <div class="chat-title">
-              <div class="chat-name">SeuAgente</div>
-              <div class="chat-status">online</div>
-            </div>
-            <span class="hicon"><svg viewBox="0 0 12 12" fill="currentColor"><circle cx="2" cy="6" r="1.1"/><circle cx="6" cy="6" r="1.1"/><circle cx="10" cy="6" r="1.1"/></svg></span>
-          </div>
-          <div class="chat-body">
-            <div class="msg-row user"><div class="msg out">Preciso de 3 ideias de Reel pra cliente nutricionista</div></div>
-            <div class="msg-time">7:55</div>
-            <div class="msg-row agent">
-              <div class="chat-avatar">S</div>
-              <div class="msg in">Fechado! No tom dela: 1) "3 trocas que emagrecem sem sofrer" 2) "O café da manhã que eu como todo dia" 3) "Mito ou verdade: jejum intermitente"</div>
-            </div>
-            <div class="msg-time">7:55</div>
-            <div class="msg-row user">
-              <div class="msg out audio-msg">
-                <span class="play"><svg viewBox="0 0 10 10" fill="currentColor"><path d="M1.5 1v8l7-4-7-4Z"/></svg></span>
-                <span class="wave"><i style="height:5px"></i><i style="height:9px"></i><i style="height:14px"></i><i style="height:7px"></i><i style="height:11px"></i><i style="height:15px"></i><i style="height:6px"></i><i style="height:10px"></i><i style="height:13px"></i><i style="height:5px"></i><i style="height:8px"></i><i style="height:12px"></i><i style="height:6px"></i></span>
-                <span class="dur">0:11</span>
-              </div>
-            </div>
-            <div class="msg-time">7:57</div>
-            <div class="msg-row agent">
-              <div class="chat-avatar">S</div>
-              <div class="msg in">Aqui está o que criei:</div>
-            </div>
-            <div class="creations">
-              <div class="mini-card"><div class="mc-emoji">🎬</div><div class="mc-label">Roteiro do Reel</div></div>
-              <div class="mini-card"><div class="mc-emoji">✍️</div><div class="mc-label">Legenda pronta</div></div>
-              <div class="mini-card"><div class="mc-emoji">📸</div><div class="mc-label">Ideias de story</div></div>
-            </div>
-            <div class="msg-time" style="align-self:flex-start;margin-left:31px">7:59</div>
-          </div>
-          <div class="chat-actions">
-            <span class="act-left"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 7a5 5 0 1 1-1.5-3.6M12 1v3h-3"/></svg> Refazer</span>
-            <span class="thumbs">
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 6.5v6H2a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2Zm0 0 2.5-5a1.5 1.5 0 0 1 1.4 1.9L7.3 5.5h4.2a1.5 1.5 0 0 1 1.4 2l-1.5 4a1.5 1.5 0 0 1-1.4 1H4"/></svg>
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" style="transform:rotate(180deg)"><path d="M4 6.5v6H2a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2Zm0 0 2.5-5a1.5 1.5 0 0 1 1.4 1.9L7.3 5.5h4.2a1.5 1.5 0 0 1 1.4 2l-1.5 4a1.5 1.5 0 0 1-1.4 1H4"/></svg>
-            </span>
-          </div>
-          <div class="chat-input">
-            <span class="plus">+</span>
-            <span class="placeholder">Digite sua mensagem...</span>
-            <span class="send"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 10V2M2.5 5.5 6 2l3.5 3.5"/></svg></span>
-          </div>
-          <div class="home-bar"></div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 

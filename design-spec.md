@@ -98,7 +98,8 @@ logo centralizado → headline grande → subtítulo → um painel único com o 
 
 Nova ordem: Hero → Como funciona na prática → Bônus → Formulário → Quem somos → FAQ → CTA final.
 
-- **Hero**: "Faça roteiros com a voz dos seus clientes." (a segunda linha entra letra a letra) + "Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros."
+- **Hero**: sem celular e sem chips flutuantes (removidos junto com o CSS deles). No lugar, a foto do tabuleiro de xadrez (`hero-xadrez.jpg`) entra como fundo do bloco a 15% de opacidade, em preto e branco, com respiração lenta (escala 1→1.06 e leve subida em 26s, alternando). Sem JS ou com movimento reduzido, o fundo aparece parado. ATENÇÃO: o arquivo atual é um comp de banco de imagens COM MARCA D_AGUA — trocar pelo licenciado mantendo o mesmo nome de arquivo.
+- **Hero (copy)**: "Faça roteiros com a voz dos seus clientes." (a segunda linha entra letra a letra) + "Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros."
 - **Bloco 2 — Como funciona na prática**: dois passos (1. Diagnóstico profundo do cliente → 2. Desenvolvimento sob medida) + `.demo`, uma recriação em HTML/CSS da conversa do agente no Discord (avatar, badge APP, horário, contexto da pergunta acima). Animação: pontinhos de "digitando" aparecem e somem, depois os parágrafos entram em cascata (1.5s / 2.1s / 2.7s). Recriado em HTML em vez de usar o print: fica nítido em qualquer tela, é responsivo e acessível.
 - **Bloco 3 — Bônus**: o segundo agente que traz ideias e sugere formato. Três cards de notícia entrando em sequência, cada um com chips de formato sugerido (o ativo em preto).
 - **Bloco 4**: formulário com o título "Pra ter o seu, é só preencher aqui."
