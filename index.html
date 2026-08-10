@@ -184,34 +184,45 @@
     color: var(--text-muted);
   }
 
-  /* ---------- Fundo animado do hero ---------- */
+  /* ---------- Tabuleiro do hero (SVG, sem fundo) ---------- */
   .hero { position: relative; overflow: hidden; }
   .hero .container { position: relative; z-index: 1; }
-  .hero::before {
-    content: '';
+  .xadrez {
     position: absolute;
-    inset: 0;
-    background: url('hero-xadrez.jpg') no-repeat center 72% / min(1080px, 135%);
-    filter: grayscale(1) contrast(1.04);
-    opacity: 0;
+    left: 50%;
+    top: 56%;
+    transform: translate(-50%, -50%);
+    width: min(960px, 132%);
+    height: auto;
+    z-index: 0;
     pointer-events: none;
-    will-change: transform, opacity;
   }
-  .js-anim .hero::before {
-    animation: fundoEntra 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards,
-               fundoRespira 26s ease-in-out 2.2s infinite alternate;
-  }
-  /* Sem JS o fundo aparece parado, sem depender de animação */
-  html:not(.js-anim) .hero::before { opacity: 0.15; }
+  .borda { fill: none; stroke: var(--primary); stroke-width: 1.1; opacity: 0.16; }
+  .casa { fill: var(--primary); opacity: 0.1; }
+  .peca { fill: var(--primary); opacity: 0.32; }
 
-  @keyframes fundoEntra { to { opacity: 0.15; } }
-  @keyframes fundoRespira {
-    from { transform: translateY(0) scale(1); }
-    to { transform: translateY(-18px) scale(1.06); }
+  /* Com JS: o tabuleiro se forma e as peças são colocadas */
+  .js-anim .borda,
+  .js-anim .casa,
+  .js-anim .peca { opacity: 0; }
+  .js-anim .borda { animation: bordaEntra 0.9s ease forwards; }
+  .js-anim .casa { animation: casaEntra 0.5s ease forwards; }
+  .js-anim .peca { animation: pecaPousa 0.6s cubic-bezier(0.34, 1.42, 0.64, 1) forwards; }
+
+  @keyframes bordaEntra { to { opacity: 0.16; } }
+  @keyframes casaEntra { from { opacity: 0; } to { opacity: 0.1; } }
+  @keyframes pecaPousa {
+    from { opacity: 0; transform: translateY(-26px); }
+    to { opacity: 0.32; transform: translateY(0); }
   }
+
+  /* Rede de segurança: se a animação não rodar, o tabuleiro aparece mesmo assim */
+  .xadrez.pronto .borda { opacity: 0.16; }
+  .xadrez.pronto .casa { opacity: 0.1; }
+  .xadrez.pronto .peca { opacity: 0.32; transform: none; }
 
   @media (max-width: 767px) {
-    .hero::before { background-size: 150%; background-position: center 68%; }
+    .xadrez { width: 120%; top: 58%; }
   }
 
   /* ---------- Eyebrow / headers de seção ---------- */
@@ -864,7 +875,9 @@
     .js-anim .demo-linha,
     .js-anim .noticia { opacity: 1; transform: none; transition: none; animation: none; }
     .js-anim .digitando { display: none; }
-    .js-anim .hero::before { animation: none; opacity: 0.15; }
+    .js-anim .borda { animation: none; opacity: 0.16; }
+    .js-anim .casa { animation: none; opacity: 0.1; }
+    .js-anim .peca { animation: none; opacity: 0.32; transform: none; }
     .reveal { opacity: 1; transform: none; transition: none; }
     .hero .rotator .letter { opacity: 1; transform: none; animation: none; }
   }
@@ -891,6 +904,58 @@
 
 <!-- 1. HERO -->
 <section class="hero">
+    <svg class="xadrez" viewBox="0 0 940 470" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <g class="xadrez-grupo">
+        <polygon class="borda" points="470,73.51 809.41,250 470,426.49 130.59,250" style="animation-delay:0.15s"/>
+        <polygon class="casa" points="512.43,95.57 554.85,117.63 512.43,139.69 470,117.63" style="animation-delay:0.31s"/>
+        <polygon class="casa" points="597.28,139.69 639.71,161.75 597.28,183.81 554.85,161.75" style="animation-delay:0.42s"/>
+        <polygon class="casa" points="682.13,183.81 724.56,205.88 682.13,227.94 639.71,205.88" style="animation-delay:0.53s"/>
+        <polygon class="casa" points="766.98,227.94 809.41,250 766.98,272.06 724.56,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="427.57,95.57 470,117.63 427.57,139.69 385.15,117.63" style="animation-delay:0.31s"/>
+        <polygon class="casa" points="512.43,139.69 554.85,161.75 512.43,183.81 470,161.75" style="animation-delay:0.42s"/>
+        <polygon class="casa" points="597.28,183.81 639.71,205.88 597.28,227.94 554.85,205.88" style="animation-delay:0.53s"/>
+        <polygon class="casa" points="682.13,227.94 724.56,250 682.13,272.06 639.71,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="427.57,139.69 470,161.75 427.57,183.81 385.15,161.75" style="animation-delay:0.42s"/>
+        <polygon class="casa" points="512.43,183.81 554.85,205.88 512.43,227.94 470,205.88" style="animation-delay:0.53s"/>
+        <polygon class="casa" points="597.28,227.94 639.71,250 597.28,272.06 554.85,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="682.13,272.06 724.56,294.12 682.13,316.19 639.71,294.12" style="animation-delay:0.75s"/>
+        <polygon class="casa" points="342.72,139.69 385.15,161.75 342.72,183.81 300.29,161.75" style="animation-delay:0.42s"/>
+        <polygon class="casa" points="427.57,183.81 470,205.88 427.57,227.94 385.15,205.88" style="animation-delay:0.53s"/>
+        <polygon class="casa" points="512.43,227.94 554.85,250 512.43,272.06 470,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="597.28,272.06 639.71,294.12 597.28,316.19 554.85,294.12" style="animation-delay:0.75s"/>
+        <polygon class="casa" points="342.72,183.81 385.15,205.88 342.72,227.94 300.29,205.88" style="animation-delay:0.53s"/>
+        <polygon class="casa" points="427.57,227.94 470,250 427.57,272.06 385.15,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="512.43,272.06 554.85,294.12 512.43,316.19 470,294.12" style="animation-delay:0.75s"/>
+        <polygon class="casa" points="597.28,316.19 639.71,338.25 597.28,360.31 554.85,338.25" style="animation-delay:0.86s"/>
+        <polygon class="casa" points="257.87,183.81 300.29,205.88 257.87,227.94 215.44,205.88" style="animation-delay:0.53s"/>
+        <polygon class="casa" points="342.72,227.94 385.15,250 342.72,272.06 300.29,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="427.57,272.06 470,294.12 427.57,316.19 385.15,294.12" style="animation-delay:0.75s"/>
+        <polygon class="casa" points="512.43,316.19 554.85,338.25 512.43,360.31 470,338.25" style="animation-delay:0.86s"/>
+        <polygon class="casa" points="257.87,227.94 300.29,250 257.87,272.06 215.44,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="342.72,272.06 385.15,294.12 342.72,316.19 300.29,294.12" style="animation-delay:0.75s"/>
+        <polygon class="casa" points="427.57,316.19 470,338.25 427.57,360.31 385.15,338.25" style="animation-delay:0.86s"/>
+        <polygon class="casa" points="512.43,360.31 554.85,382.37 512.43,404.43 470,382.37" style="animation-delay:0.97s"/>
+        <polygon class="casa" points="173.02,227.94 215.44,250 173.02,272.06 130.59,250" style="animation-delay:0.64s"/>
+        <polygon class="casa" points="257.87,272.06 300.29,294.12 257.87,316.19 215.44,294.12" style="animation-delay:0.75s"/>
+        <polygon class="casa" points="342.72,316.19 385.15,338.25 342.72,360.31 300.29,338.25" style="animation-delay:0.86s"/>
+        <polygon class="casa" points="427.57,360.31 470,382.37 427.57,404.43 385.15,382.37" style="animation-delay:0.97s"/>
+        <g transform="translate(173.02 250)"><path class="peca" d="M-8 0h16c0-3.5-3-4-4-7.5h-8C-5 -4-8-3.5-8 0Zm3-9h10l-1.5-13h-7Zm-4-14.5h18v-7h-4v3h-3.2v-3h-4.6v3H-5v-3h-4Z" style="animation-delay:1.15s"/></g>
+        <g transform="translate(215.44 272.06)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:1.28s"/></g>
+        <g transform="translate(300.29 316.19)"><path class="peca" d="M-9 0h18c0-3.5-3.2-4-4.2-7.5h-9.6C-5.8-4-9-3.5-9 0Zm3.4-9.5h11.2l1.8-14H-7.4Zm-2.6-16h16.4c1.6-4.4.4-8.6-3.4-10.4-2.6-1.2-5.2-.4-6.8 1.6-1.6-2-4.2-2.8-6.8-1.6-3.8 1.8-5 6-3.4 10.4Zm6.6-13.4h4v-4h4v-3.6h-4v-4h-4v4h-4v3.6h4Z" style="animation-delay:1.41s"/></g>
+        <g transform="translate(385.15 360.31)"><path class="peca" d="M-7.5 0h15c0-3-2.8-3.5-3.8-6.5h-7.4C-4.7-3.5-7.5-3-7.5 0Zm3-8h9l-1.2-4.5h-6.6Zm4.5-6c4.5 0 7-3 7-6.8 0-4.2-4-8-7-11.7-3 3.7-7 7.5-7 11.7 0 3.8 2.5 6.8 7 6.8Zm0-20.5a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z" style="animation-delay:1.54s"/></g>
+        <g transform="translate(470 404.43)"><path class="peca" d="M-8 0h16c0-3.5-3-4-4-7.5h-8C-5 -4-8-3.5-8 0Zm3-9h10l-1.5-13h-7Zm-4-14.5h18v-7h-4v3h-3.2v-3h-4.6v3H-5v-3h-4Z" style="animation-delay:1.67s"/></g>
+        <g transform="translate(300.29 272.06)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:1.8s"/></g>
+        <g transform="translate(385.15 316.19)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:1.93s"/></g>
+        <g transform="translate(470 360.31)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:2.06s"/></g>
+        <g transform="translate(427.57 250)"><path class="peca" d="M-8 0h16c0-3.5-3-4-3.8-7H-4.2C-5 -4-8-3.5-8 0Zm3.5-8.5h9c1.5-8 2-14 .5-19.5-1.2-4.4-4.2-7.2-8-8.6l1.4-3.6-3-1.2-2 4.6c-2.6 1.2-4.8 3.2-6 5.8l-2 4.4 3.4 1.6 2-2.2 2.6 1.2-2.6 5.4c-1.4 3-1 6.6 1.2 8.6Z" style="animation-delay:2.19s"/></g>
+        <g transform="translate(554.85 272.06)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:2.32s"/></g>
+        <g transform="translate(512.43 161.75)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:2.45s"/></g>
+        <g transform="translate(597.28 205.88)"><path class="peca" d="M-6.5 0h13c0-3-2.5-3.5-3.5-6.5h-6C-4 -3-6.5-3-6.5 0Zm3-8.5h7l-1-5.5h-5Zm3.5-7a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Z" style="animation-delay:2.58s"/></g>
+        <g transform="translate(470 95.57)"><path class="peca" d="M-8 0h16c0-3.5-3-4-4-7.5h-8C-5 -4-8-3.5-8 0Zm3-9h10l-1.5-13h-7Zm-4-14.5h18v-7h-4v3h-3.2v-3h-4.6v3H-5v-3h-4Z" style="animation-delay:2.71s"/></g>
+        <g transform="translate(597.28 161.75)"><path class="peca" d="M-9 0h18c0-3.5-3.2-4-4.2-7.5h-9.6C-5.8-4-9-3.5-9 0Zm3.4-9.5h11.2l1.6-13.5H-7.2Zm-2.2-15.5h15.6l3.4-11-5.4 4-3.4-8.6-2.4 8.6L-2 -30l-2.4-8.6-3.4 8.6-5.4-4Zm7.8-17.6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" style="animation-delay:2.84s"/></g>
+        <g transform="translate(724.56 227.94)"><path class="peca" d="M-8 0h16c0-3.5-3-4-3.8-7H-4.2C-5 -4-8-3.5-8 0Zm3.5-8.5h9c1.5-8 2-14 .5-19.5-1.2-4.4-4.2-7.2-8-8.6l1.4-3.6-3-1.2-2 4.6c-2.6 1.2-4.8 3.2-6 5.8l-2 4.4 3.4 1.6 2-2.2 2.6 1.2-2.6 5.4c-1.4 3-1 6.6 1.2 8.6Z" style="animation-delay:2.97s"/></g>
+      </g>
+    </svg>
   <div class="container">
     <p class="eyebrow reveal">SeuAgente</p>
     <h1 class="reveal rd-1">
@@ -1217,6 +1282,12 @@
       });
     }
     show('com a voz dos seus clientes.');
+  })();
+
+  // Tabuleiro: garante o estado final mesmo se a animação não rodar
+  (function () {
+    var svg = document.querySelector('.xadrez');
+    if (svg) setTimeout(function () { svg.classList.add('pronto'); }, 4500);
   })();
 
   // FAQ accordion
