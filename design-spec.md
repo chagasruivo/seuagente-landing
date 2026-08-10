@@ -98,11 +98,14 @@ logo centralizado → headline grande → subtítulo → um painel único com o 
 
 Nova ordem: Hero → Como funciona na prática → Bônus → Formulário → Quem somos → FAQ → CTA final.
 
-- **Hero**: sem celular, sem chips e sem tabuleiro. O fundo é a arte das mãos (robô + humana) em `hero-maos.webp` (fallback `hero-maos.jpg` via `<picture>`), de borda a borda, centralizada, em preto e branco a **10% de opacidade** (90% transparente — encanta sem competir com o texto).
-  - **Parallax**: um listener de scroll com requestAnimationFrame escreve a custom property `--sobe` (`-scrollY * 0.16`), consumida no `transform: translate(-50%, calc(-50% + var(--sobe)))`. A imagem sobe conforme a página desce.
-  - **Respiração**: `scale` de 1 a 1.05 em 32s, alternando. Usa a propriedade `scale` (separada do `transform`) de propósito, pra não brigar com o parallax.
-  - **Qualidade**: o original tinha só 564x318 e ficava borrado esticado. Foi reamostrado 4x com Lanczos + unsharp mask para 2256x1272 (densidade ~1.8x na tela). WebP a 46KB, menor que o JPG original.
-  - Movimento reduzido desliga parallax e respiração; a imagem aparece parada.
+- **Hero**: o fundo é um VÍDEO das mãos (robô + humana se aproximando), `hero-maos.mp4` — `<video autoplay muted loop playsinline>` com poster `hero-poster.jpg`.
+  - **Sem borda, garantido**: `position:absolute; inset:0; width/height:100%; object-fit:cover` — o vídeo preenche o bloco inteiro em qualquer proporção de tela (recorta o excesso, nunca deixa faltar). Verificado 375x812 e 1280x720: caixa do vídeo == caixa do hero.
+  - **Encode**: original 1916x1080/5s/3.3MB → 1280w, CRF30, sem áudio, P&B embutido, loop vai-e-vem (frente + reverso concatenados = 10s sem emenda visível) → **250KB**.
+  - Opacidade 0.1 (90% transparente) + fade de entrada. `playsinline` é obrigatório pro iPhone tocar sem abrir fullscreen.
+  - Reduced-motion: JS remove autoplay e pausa; fica o primeiro quadro (poster).
+  - O parallax de scroll foi removido de propósito: translate deslocaria o cover e reabriria borda; o movimento agora vem do próprio vídeo.
+  - Arquivos `hero-maos.jpg`/`.webp` removidos do projeto.
+
 - **Hero (copy)**: "Faça roteiros com a voz dos seus clientes." (a segunda linha entra letra a letra) + "Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros."
 - **Bloco 2 — Como funciona na prática**: dois passos (1. Diagnóstico profundo do cliente → 2. Desenvolvimento sob medida) + `.demo`, uma recriação em HTML/CSS da conversa do agente no Discord (avatar, badge APP, horário, contexto da pergunta acima). Animação: pontinhos de "digitando" aparecem e somem, depois os parágrafos entram em cascata (1.5s / 2.1s / 2.7s). Recriado em HTML em vez de usar o print: fica nítido em qualquer tela, é responsivo e acessível.
 - **Bloco 3 — Bônus**: o segundo agente que traz ideias e sugere formato. Três cards de notícia entrando em sequência, cada um com chips de formato sugerido (o ativo em preto).

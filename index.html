@@ -184,7 +184,7 @@
     color: var(--text-muted);
   }
 
-  /* ---------- Arte do hero: mãos, de borda a borda ---------- */
+  /* ---------- Vídeo do hero: cobre o bloco inteiro, sem borda ---------- */
   .hero { position: relative; overflow: hidden; }
   .hero .container { position: relative; z-index: 1; }
   .hero-arte {
@@ -194,26 +194,18 @@
     pointer-events: none;
     overflow: hidden;
   }
-  .hero-arte img {
+  .hero-arte video {
     position: absolute;
-    left: 50%;
-    top: 52%;
+    inset: 0;
     width: 100%;
-    height: auto;
-    /* --sobe é atualizado no scroll (parallax) */
-    transform: translate(-50%, calc(-50% + var(--sobe, 0px)));
+    height: 100%;
+    object-fit: cover;     /* preenche sempre: recorta o excesso, nunca deixa faltar */
+    object-position: center 45%;
     opacity: 0.1;          /* 90% transparente: encanta sem competir com o texto */
     filter: grayscale(1);
-    will-change: transform;
   }
-  .js-anim .hero-arte img {
-    opacity: 0;
-    animation: arteEntra 1.6s ease 0.3s forwards,
-               arteRespira 32s ease-in-out 2s infinite alternate;
-  }
+  .js-anim .hero-arte video { opacity: 0; animation: arteEntra 1.6s ease 0.3s forwards; }
   @keyframes arteEntra { to { opacity: 0.1; } }
-  /* scale é propriedade separada do transform: não conflita com o parallax */
-  @keyframes arteRespira { from { scale: 1; } to { scale: 1.05; } }
 
   /* ---------- Eyebrow / headers de seção ---------- */
   .section-header { max-width: 720px; margin-bottom: 48px; }
@@ -865,7 +857,7 @@
     .js-anim .demo-linha,
     .js-anim .noticia { opacity: 1; transform: none; transition: none; animation: none; }
     .js-anim .digitando { display: none; }
-    .js-anim .hero-arte img { animation: none; opacity: 0.1; }
+    .js-anim .hero-arte video { animation: none; opacity: 0.1; }
     .reveal { opacity: 1; transform: none; transition: none; }
     .hero .rotator .letter { opacity: 1; transform: none; animation: none; }
   }
@@ -892,7 +884,7 @@
 
 <!-- 1. HERO -->
 <section class="hero">
-    <div class="hero-arte" aria-hidden="true"><picture><source srcset="hero-maos.webp" type="image/webp"><img src="hero-maos.jpg" alt="" loading="eager" decoding="async"></picture></div>
+    <div class="hero-arte" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg"><source src="hero-maos.mp4" type="video/mp4"></video></div>
   <div class="container">
     <p class="eyebrow reveal">SeuAgente</p>
     <h1 class="reveal rd-1">
@@ -1221,22 +1213,14 @@
     show('com a voz dos seus clientes.');
   })();
 
-  // Arte do hero sobe devagar conforme a página desce
+  // Quem pediu menos movimento vê o vídeo parado no primeiro quadro
   (function () {
-    var arte = document.querySelector('.hero-arte img');
-    if (!arte) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var pendente = false;
-    function posiciona() {
-      var y = window.pageYOffset || document.documentElement.scrollTop;
-      arte.style.setProperty('--sobe', Math.round(-y * 0.16) + 'px');
-      pendente = false;
+    var v = document.querySelector('.hero-arte video');
+    if (!v) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.removeAttribute('autoplay');
+      v.pause();
     }
-    window.addEventListener('scroll', function () {
-      if (!pendente) { pendente = true; requestAnimationFrame(posiciona); }
-    }, { passive: true });
-    posiciona();
   })();
 
   // FAQ accordion
