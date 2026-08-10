@@ -93,3 +93,15 @@ logo centralizado → headline grande → subtítulo → um painel único com o 
 - Grava na MESMA tabela `leads` (aparece no mesmo CRM), com `pagina = 'estrategia'` pra distinguir de quem veio pela landing principal (`pagina = 'principal'`, valor padrão da coluna).
 - O rastreio de indicação (`?ref=`) continua funcionando aqui também, então as duas dimensões coexistem: quem indicou × qual landing converteu.
 - No CRM: etiqueta tracejada "LP EstratégIA" no card, linha "Landing" no detalhe e um segundo grupo de filtros ("Landing:") que recalcula as métricas — dá pra comparar a conversão das duas páginas.
+
+## Reestruturação da landing principal (feedback do público)
+
+Nova ordem: Hero → Como funciona na prática → Bônus → Formulário → Quem somos → FAQ → CTA final.
+
+- **Hero**: "Faça roteiros com a voz dos seus clientes." (a segunda linha entra letra a letra) + "Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros."
+- **Bloco 2 — Como funciona na prática**: dois passos (1. Diagnóstico profundo do cliente → 2. Desenvolvimento sob medida) + `.demo`, uma recriação em HTML/CSS da conversa do agente no Discord (avatar, badge APP, horário, contexto da pergunta acima). Animação: pontinhos de "digitando" aparecem e somem, depois os parágrafos entram em cascata (1.5s / 2.1s / 2.7s). Recriado em HTML em vez de usar o print: fica nítido em qualquer tela, é responsivo e acessível.
+- **Bloco 3 — Bônus**: o segundo agente que traz ideias e sugere formato. Três cards de notícia entrando em sequência, cada um com chips de formato sugerido (o ativo em preto).
+- **Bloco 4**: formulário com o título "Pra ter o seu, é só preencher aqui."
+- Navbar: o link "Funcionalidades" virou "Bônus" (#bonus).
+
+**Regra importante de robustez:** o estado inicial invisível das animações fica sob a classe `.js-anim`, adicionada ao `<html>` por um script logo no início do body. Sem JS (ou se o IntersectionObserver falhar), todo o conteúdo nasce visível — texto nunca depende de JS pra ser lido. O bloco de `prefers-reduced-motion` também zera as animações novas.

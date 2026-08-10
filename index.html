@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SeuAgente — Atenda mais clientes pela metade do tempo</title>
-<meta name="description" content="Tenha um agente IA como a voz do seu cliente que traz ideias de conteúdos, faz calendário editorial, analisa os conteúdos e escreve roteiros com a voz do seu cliente.">
+<title>SeuAgente — Faça roteiros com a voz dos seus clientes</title>
+<meta name="description" content="Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&family=Inter:wght@300;400&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
     --bg-elevated-hover: rgba(64, 64, 64, 0.10);
     --text-primary: #0A0A0A;
     --text-muted: rgba(10, 10, 10, 0.6);
+    --text-faint: rgba(10, 10, 10, 0.38);
     --grad-section: linear-gradient(317deg, #F5F5F5 16%, #FFFFFF 91%);
     --grad-section-alt: linear-gradient(129deg, #F5F5F5 16%, #FAFAFA 91%);
     --font-display: 'Merriweather', serif;
@@ -875,6 +876,219 @@
 
   section[id] { scroll-margin-top: 80px; }
 
+  /* ---------- Bloco 2: passos + demo do agente ---------- */
+  .passos {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  @media (min-width: 768px) { .passos { grid-template-columns: 1fr 1fr; gap: 24px; } }
+  .passo {
+    background: var(--bg-elevated);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    transition: background 0.3s ease;
+  }
+  .passo:hover { background: var(--bg-elevated-hover); }
+  .passo .etapa {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .passo .etapa i {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+    font-size: 11px;
+  }
+  .passo h3 { font-size: 22px; line-height: 1.25; margin-bottom: 12px; }
+  .passo p { font-size: 14.5px; line-height: 1.6; }
+
+  /* Recriação da conversa do agente */
+  .demo {
+    background: var(--bg-base);
+    border: 1px solid rgba(10, 10, 10, 0.09);
+    border-radius: var(--radius-lg);
+    padding: 20px 18px;
+    max-width: 760px;
+    margin: 0 auto;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.05);
+  }
+  @media (min-width: 768px) { .demo { padding: 26px 28px; } }
+
+  .demo-topo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(10, 10, 10, 0.07);
+    font-size: 12px;
+    color: var(--text-faint, rgba(10, 10, 10, 0.38));
+  }
+  .demo-topo .curva {
+    width: 16px;
+    height: 10px;
+    border-left: 1.5px solid rgba(10, 10, 10, 0.2);
+    border-top: 1.5px solid rgba(10, 10, 10, 0.2);
+    border-top-left-radius: 5px;
+    flex-shrink: 0;
+  }
+  .demo-topo .quem { color: var(--text-muted); }
+  .demo-topo .pedido {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .demo-cabeca { display: flex; align-items: flex-start; gap: 12px; }
+  .demo-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .demo-corpo { flex: 1; min-width: 0; }
+  .demo-nome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .demo-nome b { font-weight: 400; font-size: 14.5px; color: var(--text-primary); }
+  .demo-nome .app {
+    background: var(--primary);
+    color: #FFFFFF;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .demo-nome .hora { font-size: 11px; color: rgba(10, 10, 10, 0.35); }
+
+  .demo-linha {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .js-anim .demo-linha { opacity: 0; transform: translateY(8px); }
+  .demo-linha:last-child { margin-bottom: 0; }
+  .demo-linha strong { font-weight: 400; color: var(--text-primary); }
+  .demo.visible .demo-linha { animation: linhaEntra 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .demo.visible .demo-linha:nth-of-type(1) { animation-delay: 1.5s; }
+  .demo.visible .demo-linha:nth-of-type(2) { animation-delay: 2.1s; }
+  .demo.visible .demo-linha:nth-of-type(3) { animation-delay: 2.7s; }
+  @keyframes linhaEntra { to { opacity: 1; transform: none; } }
+
+  .digitando {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    height: 20px;
+    opacity: 0;
+  }
+  .js-anim .digitando { display: inline-flex; }
+  .demo.visible .digitando { animation: digitaSome 1.6s ease forwards; }
+  @keyframes digitaSome {
+    0% { opacity: 0; }
+    12% { opacity: 1; }
+    82% { opacity: 1; }
+    100% { opacity: 0; height: 0; }
+  }
+  .digitando i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(10, 10, 10, 0.3);
+    animation: pisca 1.2s infinite;
+  }
+  .digitando i:nth-child(2) { animation-delay: 0.2s; }
+  .digitando i:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pisca { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
+
+  /* ---------- Bloco 3: bônus ---------- */
+  #bonus { background-image: var(--grad-section-alt); }
+  .selo-bonus {
+    display: inline-block;
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border: 1px solid rgba(10, 10, 10, 0.18);
+    border-radius: 9999px;
+    padding: 5px 14px;
+    margin-bottom: 18px;
+  }
+  .bonus-grid { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 900px) { .bonus-grid { grid-template-columns: 1fr 1.05fr; gap: 56px; } }
+
+  .noticias { display: flex; flex-direction: column; gap: 12px; }
+  .noticia {
+    background: var(--bg-base);
+    border: 1px solid rgba(10, 10, 10, 0.09);
+    border-radius: var(--radius-md);
+    padding: 18px 18px 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+  }
+  .js-anim .noticia { opacity: 0; transform: translateY(14px); }
+  .noticias.visible .noticia { animation: linhaEntra 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .noticias.visible .noticia:nth-child(1) { animation-delay: 0.15s; }
+  .noticias.visible .noticia:nth-child(2) { animation-delay: 0.75s; }
+  .noticias.visible .noticia:nth-child(3) { animation-delay: 1.35s; }
+
+  .noticia .manchete {
+    display: flex;
+    gap: 8px;
+    font-size: 14.5px;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .noticia .fonte {
+    font-size: 11.5px;
+    font-style: italic;
+    color: var(--text-faint, rgba(10, 10, 10, 0.38));
+    margin-bottom: 10px;
+  }
+  .noticia .resumo {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .formatos { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .formatos .rot { font-size: 11px; color: var(--text-faint, rgba(10, 10, 10, 0.38)); margin-right: 2px; }
+  .formatos span.fmt {
+    font-size: 11.5px;
+    color: var(--text-primary);
+    border: 1px solid rgba(10, 10, 10, 0.16);
+    border-radius: 9999px;
+    padding: 3px 10px;
+  }
+  .formatos span.fmt.on {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
+  }
+
   /* ---------- Footer ---------- */
   footer {
     background: var(--primary);
@@ -901,10 +1115,9 @@
 
   /* ---------- Reveal on scroll ---------- */
   .reveal {
-    opacity: 0;
-    transform: translateY(24px);
     transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
+  .js-anim .reveal { opacity: 0; transform: translateY(24px); }
   .reveal.visible { opacity: 1; transform: translateY(0); }
   .reveal.visible.rd-1 { transition-delay: 0.1s; }
   .reveal.visible.rd-2 { transition-delay: 0.2s; }
@@ -920,19 +1133,24 @@
   .faq-list .faq-item.visible:nth-child(4) { transition-delay: 0.24s; }
   .about .about-text.visible { transition-delay: 0.15s; }
   @media (prefers-reduced-motion: reduce) {
+    .js-anim .reveal,
+    .js-anim .demo-linha,
+    .js-anim .noticia { opacity: 1; transform: none; transition: none; animation: none; }
+    .js-anim .digitando { display: none; }
     .reveal { opacity: 1; transform: none; transition: none; }
     .hero .rotator .letter { opacity: 1; transform: none; animation: none; }
   }
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add('js-anim');</script>
 
 <header class="nav">
   <div class="nav-inner">
     <a class="nav-logo" href="#">SeuAgente</a>
     <nav class="nav-links">
       <a href="#como-funciona">Como funciona</a>
-      <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#bonus">Bônus</a>
       <a href="#quem-somos">Quem somos</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -948,11 +1166,11 @@
   <div class="container">
     <p class="eyebrow reveal">SeuAgente</p>
     <h1 class="reveal rd-1">
-      Atenda mais clientes
+      Faça roteiros
       <span class="rotator" id="rotator" aria-hidden="true"></span>
-      <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">pela metade do tempo.</span>
+      <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">com a voz dos seus clientes.</span>
     </h1>
-    <p class="sub reveal rd-2">Tenha um agente IA como a voz do seu cliente que traz ideias de conteúdos, faz calendário editorial, analisa os conteúdos e escreve roteiros com a voz do seu cliente.</p>
+    <p class="sub reveal rd-2">Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros.</p>
     <a class="btn reveal rd-3" href="#form">
       Quero meu Agente IA
       <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h12M10 4l5 5-5 5"/></svg>
@@ -1050,59 +1268,96 @@
   </div>
 </section>
 
-<!-- 2. COMO FUNCIONA -->
+<!-- 2. COMO FUNCIONA NA PRÁTICA -->
 <section id="como-funciona">
   <div class="container">
     <div class="section-header reveal">
-      <h2>Delegue em 3 passos. Não em 3 meses.</h2>
-      <p>Contratar custa tempo, treino e paciência. Com o SeuAgente, você começa hoje com uma conversa.</p>
+      <h2>Como funciona na prática.</h2>
+      <p>Não é ferramenta pronta que você configura sozinho. É um agente construído em cima de quem o seu cliente é.</p>
     </div>
-    <div class="steps">
-      <div class="card reveal">
-        <div class="num">1</div>
-        <h3>Marque uma reunião.</h3>
-        <p>A gente entende como você trabalha, quais clientes você atende e onde o tempo escapa. Nessa conversa a gente monta o DNA de cada cliente seu: voz, público, temas, o que pode e o que não pode falar.</p>
+
+    <div class="passos">
+      <div class="passo reveal">
+        <span class="etapa"><i>1</i> Diagnóstico</span>
+        <h3>A gente mergulha no seu cliente.</h3>
+        <p>Antes de escrever qualquer linha, fazemos um diagnóstico profundo: como ele fala, com quem ele fala, os temas que domina, o que pode e o que não pode dizer. É desse mergulho que sai o DNA dele.</p>
       </div>
-      <div class="card reveal">
-        <div class="num">2</div>
-        <h3>Tenha um agente de IA.</h3>
-        <p>Você tem seu agente rodando no Telegram, pede ideias de conteúdo por mensagem e roteiros, como se fosse alguém do seu time, e recebe pronto pra revisar.</p>
+      <div class="passo reveal">
+        <span class="etapa"><i>2</i> Desenvolvimento</span>
+        <h3>Desenvolvemos o agente sob medida.</h3>
+        <p>Com esse DNA na mão, a gente desenvolve o seu agente personalizado. Ele não escreve como uma IA genérica: escreve como o seu cliente escreveria, no tom e no assunto certos.</p>
       </div>
-      <div class="card reveal">
-        <div class="num">3</div>
-        <h3>Tenha resultados melhores pela metade do tempo.</h3>
-        <p>Quanto mais você usa, melhor ele fica. O agente aprende com cada aprovação e ajuste seus, afina os roteiros pro gosto de cada cliente e ainda passa a te trazer ideias de conteúdo que você nem pediu. Não é uma ferramenta que estaciona — é um agente que evolui com você.</p>
+    </div>
+
+    <div class="demo reveal">
+      <div class="demo-topo">
+        <span class="curva"></span>
+        <span class="quem">você</span>
+        <span class="pedido">Com base nas notícias de hoje, o que a gente posta?</span>
+      </div>
+      <div class="demo-cabeca">
+        <div class="demo-avatar">S</div>
+        <div class="demo-corpo">
+          <div class="demo-nome">
+            <b>SeuAgente</b>
+            <span class="app">APP</span>
+            <span class="hora">10:56</span>
+          </div>
+          <div class="digitando"><i></i><i></i><i></i></div>
+          <p class="demo-linha">Eii! Analisei o que chegou por lá e, como o foco dela é <strong>foto única para o Feed</strong>, a gente precisa escolher algo com impacto visual e que carregue aquela carga emocional que ela tem.</p>
+          <p class="demo-linha">Das notícias de hoje, a que me parece perfeita é a sobre o <strong>empreendedorismo feminino mantendo a alta no Brasil</strong>.</p>
+          <p class="demo-linha">Sabe por quê? Porque a gente não quer falar só de dado, quer falar de <strong>identidade</strong>. Já deixei o roteiro pronto na voz dela — é só revisar.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 3. FUNCIONALIDADES + RESULTADOS -->
-<section id="funcionalidades">
+<!-- 3. BÔNUS -->
+<section id="bonus">
   <div class="container">
-    <div class="section-header reveal">
-      <h2>O que o agente faz por você — e o que isso te devolve.</h2>
-    </div>
-    <div class="features">
-      <div class="feature reveal">
-        <h3>Aprende a voz de cada cliente.</h3>
-        <p>Nada de texto genérico com cara de robô. O conteúdo soa como o seu cliente.</p>
+    <div class="bonus-grid">
+      <div class="reveal">
+        <span class="selo-bonus">Bônus</span>
+        <h2 style="font-size:clamp(28px,3.5vw,40px);line-height:1.15;margin-bottom:16px">Um segundo agente que nunca deixa você sem ideia.</h2>
+        <p style="font-size:16px;line-height:1.6;margin-bottom:14px">Junto com o seu Social Media IA, criamos outro agente que acompanha o que está acontecendo e te traz ideias de conteúdo com frequência — sem você precisar pedir.</p>
+        <p style="font-size:16px;line-height:1.6">E não para na ideia: ele já sugere <strong style="font-weight:400;color:var(--text-primary)">o formato certo</strong> pra cada uma. Se aquele assunto rende mais em Reels, carrossel ou foto única, ele te diz.</p>
       </div>
-      <div class="feature reveal">
-        <h3>Busca ideias de conteúdo.</h3>
-        <p>Sem ter que ficar procurando por horas por conteúdo, o SeuAgente traz ideias de conteúdo com base em cada tema do seu cliente.</p>
+
+      <div class="noticias reveal">
+        <div class="noticia">
+          <div class="manchete"><span>📰</span><span>Mulheres da Geração Z empreendem mais, e maternidade aparece como um dos motores</span></div>
+          <div class="fonte">The News</div>
+          <p class="resumo">Gen Z lidera o empreendedorismo com 47%, à frente da Geração X (46%) e dos Millennials (43%). Quase 20% já eram mães quando abriram o próprio negócio.</p>
+          <div class="formatos">
+            <span class="rot">Formato:</span>
+            <span class="fmt on">Foto única</span>
+            <span class="fmt">Carrossel</span>
+          </div>
+        </div>
+
+        <div class="noticia">
+          <div class="manchete"><span>📰</span><span>Marcas pequenas crescem apostando em bastidor e rosto do dono</span></div>
+          <div class="fonte">The News</div>
+          <p class="resumo">Perfis que mostram o processo por trás do produto seguram mais atenção do que anúncio tradicional, segundo levantamento do setor.</p>
+          <div class="formatos">
+            <span class="rot">Formato:</span>
+            <span class="fmt on">Reels</span>
+            <span class="fmt">Story</span>
+          </div>
+        </div>
+
+        <div class="noticia">
+          <div class="manchete"><span>📰</span><span>Busca por conteúdo educativo cresce entre profissionais autônomos</span></div>
+          <div class="fonte">The News</div>
+          <p class="resumo">Formatos que ensinam algo prático em menos de um minuto lideram salvamentos e compartilhamentos no último trimestre.</p>
+          <div class="formatos">
+            <span class="rot">Formato:</span>
+            <span class="fmt on">Carrossel</span>
+            <span class="fmt">Reels</span>
+          </div>
+        </div>
       </div>
-      <div class="feature reveal">
-        <h3>Entrega conteúdo pronto pra postar.</h3>
-        <p>Legenda, roteiro, carrossel, ideias de story. Tudo em minutos do jeito que o seu cliente fala.</p>
-      </div>
-      <div class="feature reveal">
-        <h3>Organiza a entrega.</h3>
-        <p>Conteúdo estruturado e fácil de aprovar. Menos idas e vindas, mais coisa saindo.</p>
-      </div>
-    </div>
-    <div class="features-close reveal">
-      <p>Você faz tudo que precisa pela metade do tempo e consegue pegar mais clientes sem ter que trabalhar até tarde todos os dias. Você tem sua vida de volta e a escolha passa a ser sua.</p>
     </div>
   </div>
 </section>
@@ -1111,8 +1366,8 @@
 <section id="form">
   <div class="container">
     <div class="form-head reveal">
-      <h2>Tenha SeuAgente ainda Hoje</h2>
-      <p>Em 10 minutos de conversa a gente entende como você trabalha hoje e mostra se o agente faz sentido pra você, ou se não faz. Responde aqui embaixo, leva menos de um minuto.</p>
+      <h2>Pra ter o seu, é só preencher aqui.</h2>
+      <p>Preenche o formulário abaixo e a gente entra em contato pra entender o seu momento e montar o seu agente. Leva menos de um minuto.</p>
     </div>
 
     <form id="lead-form" class="lead-form reveal" novalidate>
@@ -1322,7 +1577,7 @@
         }
       });
     }
-    show('pela metade do tempo.');
+    show('com a voz dos seus clientes.');
   })();
 
   // FAQ accordion
