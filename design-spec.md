@@ -98,9 +98,9 @@ logo centralizado → headline grande → subtítulo → um painel único com o 
 
 Nova ordem: Hero → Como funciona na prática → Bônus → Formulário → Quem somos → FAQ → CTA final.
 
-- **Hero**: o fundo é um VÍDEO das mãos (robô + humana se aproximando), `hero-maos.mp4` — `<video autoplay muted loop playsinline>` com poster `hero-poster.jpg`.
+- **Hero**: o fundo é um VÍDEO das mãos (robô + humana se aproximando), `hero-maos.mp4` — `<video autoplay muted playsinline>` (SEM loop) com poster `hero-poster.jpg`. Toca UMA vez ao abrir e congela no último quadro (mãos juntas). JS garante o play: tenta no load/loadeddata e de novo no primeiro gesto (toque/scroll/tecla) caso o navegador bloqueie o autoplay (economia de bateria); se o vídeo já terminou, o gesto NÃO reinicia. A pausa por prefers-reduced-motion foi removida a pedido do Igor — o vídeo toca pra todo mundo.
   - **Sem borda, garantido**: `position:absolute; inset:0; width/height:100%; object-fit:cover` — o vídeo preenche o bloco inteiro em qualquer proporção de tela (recorta o excesso, nunca deixa faltar). Verificado 375x812 e 1280x720: caixa do vídeo == caixa do hero.
-  - **Encode**: original 1916x1080/5s/3.3MB → 1280w, CRF30, sem áudio, P&B embutido, loop vai-e-vem (frente + reverso concatenados = 10s sem emenda visível) → **250KB**.
+  - **Encode**: original 1916x1080/5s/3.3MB → 1280w, CRF30, sem áudio, P&B embutido, reprodução única de 5s (o vai-e-vem foi descartado junto com o loop) → **134KB**.
   - Opacidade 0.1 (90% transparente) + fade de entrada. `playsinline` é obrigatório pro iPhone tocar sem abrir fullscreen.
   - Reduced-motion: JS remove autoplay e pausa; fica o primeiro quadro (poster).
   - O parallax de scroll foi removido de propósito: translate deslocaria o cover e reabriria borda; o movimento agora vem do próprio vídeo.

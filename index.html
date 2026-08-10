@@ -884,7 +884,7 @@
 
 <!-- 1. HERO -->
 <section class="hero">
-    <div class="hero-arte" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg"><source src="hero-maos.mp4" type="video/mp4"></video></div>
+    <div class="hero-arte" aria-hidden="true"><video autoplay muted playsinline preload="auto" poster="hero-poster.jpg"><source src="hero-maos.mp4" type="video/mp4"></video></div>
   <div class="container">
     <p class="eyebrow reveal">SeuAgente</p>
     <h1 class="reveal rd-1">
@@ -1213,14 +1213,31 @@
     show('com a voz dos seus clientes.');
   })();
 
-  // Quem pediu menos movimento vê o vídeo parado no primeiro quadro
+  // Garante que o vídeo do hero toque assim que a página abrir.
+  // Se o navegador bloquear o autoplay (ex.: modo de economia de bateria),
+  // tenta de novo no primeiro toque/rolagem da pessoa.
   (function () {
     var v = document.querySelector('.hero-arte video');
     if (!v) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      v.removeAttribute('autoplay');
-      v.pause();
+
+    function tentar() {
+      if (v.ended) return;  // tocou uma vez, acabou: nao reinicia
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
     }
+
+    function noPrimeiroGesto() {
+      tentar();
+      ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(function (ev) {
+        window.removeEventListener(ev, noPrimeiroGesto);
+      });
+    }
+
+    tentar();
+    v.addEventListener('loadeddata', tentar, { once: true });
+    ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(function (ev) {
+      window.addEventListener(ev, noPrimeiroGesto, { passive: true, once: false });
+    });
   })();
 
   // FAQ accordion
