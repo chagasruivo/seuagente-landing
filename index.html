@@ -1251,14 +1251,15 @@
       // 0 no topo -> 1 quando rolou a altura do hero
       var p = Math.min(Math.max(y / alturaHero, 0), 1);
 
-      // encontro: acontece nos primeiros 75% do percurso
-      var encontro = easeOutCubic(Math.min(p / 0.75, 1));
-      // saída: começa em 70% e termina no fim (o bloco 2 entrando)
-      var saida = Math.min(Math.max((p - 0.7) / 0.3, 0), 1);
+      // Ao abrir já estão na tela e perto (0.28); terminam de se encontrar
+      // na primeira metade da rolagem.
+      var aproxima = easeOutCubic(Math.min(p / 0.5, 1));
+      var afastaRobo = 0.28 * (1 - aproxima);
+      // a humana fecha um pouco antes: dá profundidade
+      var afastaHumana = 0.28 * (1 - Math.min(aproxima * 1.12, 1));
 
-      var afastaRobo = 1 - encontro;
-      // a robótica chega um pouco depois: dá profundidade
-      var afastaHumana = 1 - Math.min(encontro * 1.12, 1);
+      // Somem conforme a página desce, zeradas antes do bloco 2 aparecer.
+      var saida = Math.min(Math.max((p - 0.08) / 0.62, 0), 1);
       var opacidade = 0.12 * (1 - saida);
 
       maos[0].style.setProperty('--afasta', afastaRobo.toFixed(4));
