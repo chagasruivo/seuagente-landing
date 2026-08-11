@@ -98,15 +98,14 @@ logo centralizado → headline grande → subtítulo → um painel único com o 
 
 Nova ordem: Hero → Como funciona na prática → Bônus → Formulário → Quem somos → FAQ → CTA final.
 
-- **Hero**: o fundo é um VÍDEO das mãos (robô + humana se aproximando), `hero-maos.mp4` — `<video autoplay muted playsinline>` (SEM loop) com poster `hero-poster.jpg`. Toca UMA vez ao abrir e congela no último quadro (mãos juntas). JS garante o play: tenta no load/loadeddata e de novo no primeiro gesto (toque/scroll/tecla) caso o navegador bloqueie o autoplay (economia de bateria); se o vídeo já terminou, o gesto NÃO reinicia. A pausa por prefers-reduced-motion foi removida a pedido do Igor — o vídeo toca pra todo mundo.
-  - **Sem borda, garantido**: `position:absolute; inset:0; width/height:100%; object-fit:cover` — o vídeo preenche o bloco inteiro em qualquer proporção de tela (recorta o excesso, nunca deixa faltar). Verificado 375x812 e 1280x720: caixa do vídeo == caixa do hero.
-  - **Encode**: original 1916x1080/5s/3.3MB → 1280w, CRF30, sem áudio, P&B embutido, reprodução única de 5s (o vai-e-vem foi descartado junto com o loop) → **134KB**.
-  - Opacidade 0.1 (90% transparente) + fade de entrada. `playsinline` é obrigatório pro iPhone tocar sem abrir fullscreen.
-  - Reduced-motion: JS remove autoplay e pausa; fica o primeiro quadro (poster).
-  - O parallax de scroll foi removido de propósito: translate deslocaria o cover e reabriria borda; o movimento agora vem do próprio vídeo.
-  - Arquivos `hero-maos.jpg`/`.webp` removidos do projeto.
+- **Hero**: as duas mãos (robô + humana) recortadas do vídeo em PNG com transparência (`mao-robo.png`, `mao-humana.png`), com a **posição controlada pela rolagem**.
+  - **Recorte**: quadro final do vídeo → flood fill a partir das bordas (thresh 20) + fechamento morfológico (Max/MinFilter 9) pra tapar furos dos brilhos + blur 1.1 na borda. A coluna x=977 separa as duas mãos com ZERO sobreposição.
+  - **Palco**: as mãos vivem dentro de `.palco`, que reproduz o enquadramento original (aspect-ratio 1916/1080). Cada mão é posicionada nas coordenadas medidas no quadro original (robô left 0/top 23.61%/width 50.99%; humana left 50.99%/top 34.44%/width 49.01%). **Isso é essencial**: centralizar cada mão isoladamente desalinha os dedos — elas estão em alturas diferentes na foto.
+  - **Movimento**: `--afasta` (1 = afastadas, 0 = composição original) entra num `translateX(calc(var(--afasta) * ±58%))`. O JS calcula `p = scrollY / alturaDoHero`, aplica easeOutCubic e faz o encontro nos primeiros 75% do percurso; a humana chega 12% mais rápido, o que dá profundidade. De 70% a 100% a opacidade cai a zero (some quando o bloco 2 entra).
+  - **Reversível de graça**: a posição é função pura do scroll, então rolar pra cima desfaz o movimento sem código extra.
+  - Opacidade base 0.12, P&B. Sem JS ou com movimento reduzido: composição final, parada.
+  - Vídeo e imagens anteriores (hero-maos.mp4/.jpg/.webp, hero-poster.jpg) foram removidos do projeto.
 
-- **Hero (copy)**: "Faça roteiros com a voz dos seus clientes." (a segunda linha entra letra a letra) + "Com o Social Media IA, você pode atender mais clientes sem ter que se preocupar com os roteiros."
 - **Bloco 2 — Como funciona na prática**: dois passos (1. Diagnóstico profundo do cliente → 2. Desenvolvimento sob medida) + `.demo`, uma recriação em HTML/CSS da conversa do agente no Discord (avatar, badge APP, horário, contexto da pergunta acima). Animação: pontinhos de "digitando" aparecem e somem, depois os parágrafos entram em cascata (1.5s / 2.1s / 2.7s). Recriado em HTML em vez de usar o print: fica nítido em qualquer tela, é responsivo e acessível.
 - **Bloco 3 — Bônus**: o segundo agente que traz ideias e sugere formato. Três cards de notícia entrando em sequência, cada um com chips de formato sugerido (o ativo em preto).
 - **Bloco 4**: formulário com o título "Pra ter o seu, é só preencher aqui."
