@@ -200,7 +200,7 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: min(1360px, 116%);
+    width: 124%;   /* sangra pelas bordas em qualquer tela */
     aspect-ratio: 1916 / 1080;
     transform: translate(-50%, -50%);
   }
@@ -212,10 +212,11 @@
     will-change: transform;
   }
   /* posições medidas no quadro original */
-  .mao-robo   { left: 0;       top: 23.61%; width: 50.99%; transform: translateX(calc(var(--afasta, 1) * -58%)); }
-  .mao-humana { left: 50.99%;  top: 34.44%; width: 49.01%; transform: translateX(calc(var(--afasta, 1) *  58%)); }
+  .mao-robo   { left: 0;       top: 23.61%; width: 50.99%; transform: translateX(calc(var(--afasta, 0.28) * -58%)); }
+  .mao-humana { left: 50.99%;  top: 34.44%; width: 49.01%; transform: translateX(calc(var(--afasta, 0.28) *  58%)); }
 
-  @media (max-width: 767px) { .palco { width: 200%; } }
+  @media (max-width: 1024px) { .palco { width: 150%; } }
+  @media (max-width: 767px)  { .palco { width: 200%; } }
 
   /* Sem JS: composição final, mãos já encontradas */
   html:not(.js-anim) .mao { --afasta: 0; }
@@ -866,13 +867,11 @@
   .faq-list .faq-item.visible:nth-child(4) { transition-delay: 0.24s; }
   .about .about-text.visible { transition-delay: 0.15s; }
   @media (prefers-reduced-motion: reduce) {
-    .js-anim .reveal,
-    .js-anim .demo-linha,
-    .js-anim .noticia { opacity: 1; transform: none; transition: none; animation: none; }
-    .js-anim .digitando { display: none; }
-    .mao { transition: none; }
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .hero .rotator .letter { opacity: 1; transform: none; animation: none; }
+    /* As animações continuam acontecendo, só que sem deslocamento:
+       vira fade puro, que é confortável e ainda comunica movimento. */
+    .js-anim .reveal { transform: none; }
+    .js-anim .reveal.visible { transform: none; }
+    .hero .rotator .letter { transform: none; }
   }
 </style>
 </head>
@@ -1238,7 +1237,6 @@
     var hero = document.querySelector('.hero');
     if (!arte || !hero) return;
     var maos = arte.querySelectorAll('.mao');
-    var suave = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
@@ -1265,12 +1263,6 @@
       maos[0].style.setProperty('--afasta', afastaRobo.toFixed(4));
       maos[1].style.setProperty('--afasta', afastaHumana.toFixed(4));
       for (var i = 0; i < maos.length; i++) maos[i].style.opacity = opacidade.toFixed(4);
-    }
-
-    if (!suave) {
-      // movimento reduzido: composição final, parada
-      for (var i = 0; i < maos.length; i++) maos[i].style.setProperty('--afasta', '0');
-      return;
     }
 
     window.addEventListener('scroll', function () {
